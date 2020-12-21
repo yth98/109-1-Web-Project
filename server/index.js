@@ -3,6 +3,9 @@ require('dotenv-defaults').config()
 const path = require('path')
 const http = require('http')
 const express = require('express')
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose')
 const WebSocket = require('ws')
 
@@ -17,6 +20,9 @@ const server = http.createServer(app)
 const wss = new WebSocket.Server({ server })
 
 const buildPath = path.resolve(__dirname + '/../build')
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use(bodyParser.json())
+app.use(cookieParser('7463847412'))
 app.use(express.static(buildPath))
 app.use('/api', ApiRoute)
 app.get('/*', (req, res) => res.sendFile(buildPath + '/index.html'))

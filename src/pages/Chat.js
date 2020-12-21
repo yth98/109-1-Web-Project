@@ -40,9 +40,6 @@ function Chat() {
     <div className="App">
       <div className="App-title">
         <h1>iChat</h1>
-        <Button type="primary" danger onClick={clearMessages}>
-          Clear
-        </Button>
       </div>
       <div className="App-messages">
         {messages.length === 0 ? (
@@ -81,6 +78,9 @@ function Chat() {
           setBody('')
         }}
       ></Input.Search>
+      <Button type="primary" danger onClick={clearMessages}>
+        Clear
+      </Button>
     </div>
   )
 }

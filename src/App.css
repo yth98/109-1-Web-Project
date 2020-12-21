@@ -9,14 +9,11 @@
 }
 
 .App-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .App-title h1 {
   margin: 0;
-  margin-right: 20px;
   font-size: 3em;
 }
 
@@ -28,4 +25,14 @@
   margin: 20px;
   padding: 20px;
   overflow: auto;
+}
+
+.Login-avatar {
+  margin: 20px 0 40px 0;
+  height: 100px;
+}
+
+.Login-btn {
+  display: block !important;
+  margin: auto;
 }
