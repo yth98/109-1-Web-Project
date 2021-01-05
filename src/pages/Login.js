@@ -56,6 +56,7 @@ function Login() {
         </Form.Item>
         <Form.Item>
           <Button className="Login-btn" type="primary" htmlType="submit">登入</Button>
+          <Button className="Registration-btn" type="primary" htmlType="submit">註冊</Button>
         </Form.Item>
       </Form>
     </div>

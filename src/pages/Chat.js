@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import useChat from "./useChat";
-import { Layout, Button, Input, message, Tag, Menu, Breadcrumb } from "antd";
+import { Layout, Button, Input, message, Tag, Menu, Breadcrumb ,Tooltip} from "antd";
 import UserItem from "../components/Useritem";
 import AddUserItem from "../components/AddUseritem";
 import {
@@ -11,7 +11,8 @@ import {
   UserOutlined,
   HeartOutlined,
   FileImageOutlined,
-  SendOutlined  
+  SendOutlined,
+  SearchOutlined  
 } from "@ant-design/icons";
 function Chat() {
   const {
@@ -68,11 +69,8 @@ function Chat() {
   };
   return (
     
-    <Layout style={{ minHeight: "-10em" }}>
-      
-      <Sider collapsible collapsed={collapsed} onCollapse={onCollapse} >
-        <div className="logo" />
-        
+    <Layout>
+      <Sider collapsible collapsed={collapsed} onCollapse={onCollapse} > 
         <ul>
         <UserItem  Name="User0" LatestMessage="hero" />
         <AddUserItem/>  
@@ -88,25 +86,27 @@ function Chat() {
         <UserItem  />
         <UserItem  />
         </ul>
-        
       </Sider>
-      <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ 
-         margin: "auto auto auto auto", width: "1500px",height:"100px" }} >
+      <Layout >
+        <Header className="header" >
+        <div className="left">
+        <img  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt=""/>   
+        </div>
+        <div className="center">
+        <h2 style={{color:"#bbb"}}>name</h2>
+        </div>
+        
+        <div className="right">
+          <Input />
+          
+        </div>
         <div>
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt=""/>   
+          <Tooltip title="search">
+            <Button shape="circle" icon={<SearchOutlined />} />
+          </Tooltip>
         </div>
-        <div >
-        <h2>name</h2>
-        </div>
-        <div>
-        <Input.Search />
-        
-        </div>
-        
-        
         </Header>   
-        <Content style={{ margin: "0 16px" }}>
+        <Content style={{ margin: "90 20 90 30" }}>
         <ul id="chat">
 			    <li class="you">
 				<div class="entete">

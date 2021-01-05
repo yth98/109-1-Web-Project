@@ -48,7 +48,10 @@
 }
 body{
 	margin:auto;
-	background-color:#abd9e9;
+	footer div {
+		display: inline-block;
+		padding: ;
+	}
 	font-family:Arial;
 }
 layout{
@@ -101,7 +104,7 @@ aside ul{
 	margin:0;
 	list-style-type:none;
 	overflow-y:scroll;
-	height:690px;
+	height:890px;
 	width:200px;
 }
 aside li{
@@ -171,7 +174,7 @@ aside li h3{
 	margin-left:7px;
 }
 
-main header{
+/* main header{
 	height:110px;
 	padding:30px 20px 30px 40px;
 }
@@ -179,7 +182,7 @@ main header > *{
 	display:inline-block;
 	vertical-align:top;
 }
-main header img:first-child{
+main header img{
 	border-radius:50%;
 }
 main header img:last-child{
@@ -187,27 +190,37 @@ main header img:last-child{
 	margin-top:8px;
 }
 main header div{
+	display: inline;
 	margin-left:10px;
 	margin-right:145px;
 }
 main header h2{
-	font-size:16px;
+	font-size:32px;
 	margin-bottom:5px;
 }
 main header h3{
 	font-size:14px;
 	font-weight:normal;
 	color:#7e818a;
+} */
+header div{
+	display: inline-block;
 }
 
+.left,.center,.right div{
+	display:inline-block;
+	float: left;
+}
+
+
 #chat{
-	padding-left:0;
+	padding-left:330;
 	margin:0;
 	list-style-type:none;
 	overflow-y:scroll;
-	height:535px;
+	height:830px;
+	width: 550px;
 	border-top:2px solid #fff;
-	border-bottom:2px solid #fff;
 }
 #chat li{
 	padding:10px 30px;
@@ -284,9 +297,13 @@ footer{
 	font-weight:bold;
 	color:#1c9ae7;
 	vertical-align:top;
-	margin-left:333px;
-	margin-top:5px;
+	margin-left:0px;
+	margin-top:50px;
 	display:inline-block;
+}
+footer div {
+	display: inline-block;
+	padding: ;
 }
 #components-layout-demo-side .logo {
   height: 32px;
@@ -306,7 +323,3 @@ footer{
 	border-radius:3px;
 	margin: 20px;
   }
-Footer div {
-	display: inline-block;
-
-}
