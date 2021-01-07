@@ -3,9 +3,9 @@ require('dotenv-defaults').config()
 const path = require('path')
 const http = require('http')
 const express = require('express')
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const WebSocket = require('ws')
 
