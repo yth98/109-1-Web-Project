@@ -3,10 +3,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 75vh;
-  width: 1570px;
+  height: auto;
+  width: auto;
   margin: auto auto auto auto;
-  border: 2px solid rebeccapurple;
+  
 }
 
 .App-title {
@@ -39,8 +39,14 @@
 }
 
 .Login-btn {
-  display: block !important;
+  display:inline-block !important;
   margin: auto;
+  align-self: center;
+}
+.Registration-btn {
+  display:inline-block !important;
+  margin: auto;
+  align-items: center;
 }
 
 *{
