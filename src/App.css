@@ -41,12 +41,10 @@
 .Login-btn {
   display:inline-block !important;
   margin: auto;
-  align-self: center;
 }
 .Registration-btn {
-  display:inline-block !important;
-  margin: auto;
-  align-items: center;
+  display: inline-block !important;
+  margin: '0 8px';
 }
 
 *{
