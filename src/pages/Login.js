@@ -54,9 +54,9 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Item>
-        <Form.Item>
+        <Form.Item  >
           <Button className="Login-btn" type="primary" htmlType="submit">登入</Button>
-          <Button className="Registration-btn" type="primary" htmlType="submit">註冊</Button>
+          <Button className="Registration-btn" type="primary" htmlType="submit"  style={{ margin: '0 8px', }}>註冊</Button>
         </Form.Item>
       </Form>
     </div>

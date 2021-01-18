@@ -1,18 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
 import useChat from "./useChat"
-import { Layout, Button, Input, message, Tag, Menu, Breadcrumb, Tooltip } from "antd"
+import { Upload, Layout, Button, Input, message, Tag, Menu, Breadcrumb, Tooltip ,} from "antd"
 import UserItem from "../components/Useritem"
 import AddUserItem from "../components/AddUseritem"
+import MessageItem from "../components/MessageItem"
 import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
   HeartOutlined,
-  FileImageOutlined,
   SendOutlined,
   SearchOutlined,
+  UploadOutlined,
 } from "@ant-design/icons"
 function Chat() {
   const {
@@ -55,13 +51,22 @@ function Chat() {
     }
   }
 
+  const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
+
   useEffect(() => {
     displayStatus(status)
   }, [status])
 
   return (
     <Layout>
-      <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} >
+      {/* <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} > */}
+      <Sider >
         <ul>
           <UserItem Name="User0" LatestMessage="hero" />
           <AddUserItem />
@@ -88,6 +93,7 @@ function Chat() {
         </Header>
         <Content style={{ margin: "90 20 90 30" }}>
           <ul id="chat">
+            <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {true} ></MessageItem>
             <li class="you">
               <div class="entete">
                 <span class="status green"></span>
@@ -123,19 +129,29 @@ function Chat() {
             </li>
           </ul>
         </Content>
-        <Footer className="Footer">
-          <Button type="primary" icon={<FileImageOutlined />}>
-            Photos
-          </Button>
+        <Footer className="Footer" 
+        style={{backgroundColor: "#102a52" ,margin:"1 2 3 5"
+        
+        }}>
+          <div>
           <Button type="primary" icon={<HeartOutlined />}>
             Sticker
           </Button>
+          </div>
             <div>
               <Input placeholder="Type your message"/>
             </div>
-          <Button type="primary" icon={<SendOutlined />}>
+            <div>
+          <Button type="primary" icon={<SendOutlined />} style={{ margin:"8 8 8 9" }}>
             Send
           </Button>
+            </div>
+          <div>
+          <Upload name="logo" action="/upload.do" listType="picture">
+          <Button icon={<UploadOutlined />} 
+         >Photos</Button>
+          </Upload>
+          </div>
         </Footer>
       </Layout>
     </Layout>

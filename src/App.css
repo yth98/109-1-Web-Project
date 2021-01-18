@@ -50,10 +50,10 @@
 *{
   box-sizing: border-box;
 }
-body{
+/* body{
   margin: auto;
   font-family: Arial;
-}
+} */
 Layout{
   width: 750px;
   height: 800px;
@@ -72,7 +72,7 @@ Sider{
   vertical-align: top;
 }
 main{
-  height: 800px;
+  height:auto;
   display: inline-block;
   font-size: 15px;
   vertical-align: top;
@@ -103,8 +103,8 @@ aside ul{
   margin: 0;
   list-style-type: none;
   overflow-y: scroll;
-  height: 890px;
-  width: 200px;
+  height: auto;
+  /* width: 300px; */
 }
 aside li{
   padding: 10px 0;
@@ -164,7 +164,7 @@ aside li h3{
   margin-left: 7px;
 }
 
-/* main header{
+main header{
   height: 110px;
   padding: 30px 20px 30px 40px;
 }
@@ -192,7 +192,7 @@ main header h3{
   font-size: 14px;
   font-weight: normal;
   color: #7e818a;
-} */
+}
 
 header .left {
   display: block;
@@ -210,7 +210,8 @@ header .right {
   margin: 0;
   list-style-type: none;
   overflow-y: scroll;
-  height: 830px;
+  /* height:    830px; */
+  height: auto;
   border-top: 2px solid #fff;
 }
 #chat li{
@@ -288,12 +289,19 @@ footer{
   text-transform: uppercase;
   font-weight: bold;
   color: #1c9ae7;
-  vertical-align: top;
+  vertical-align: middle;
   margin-left: 0px;
-  display: inline-block;
+  /* background-color: rgb(167, 26, 26); */
+  
 }
+
 footer div {
   display: inline-block;
+  /* display: flex; */
+  margin-left: 8px;
+}
+#components-form-demo-control-hooks .ant-btn {
+  margin-right: 8px;
 }
 #components-layout-demo-side .logo {
   height: 32px;
