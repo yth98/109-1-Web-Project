@@ -66,7 +66,7 @@ function Chat() {
   return (
     <Layout>
       {/* <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} > */}
-      <Sider >
+      <Sider>
         <ul>
           <UserItem Name="User0" LatestMessage="hero" />
           <AddUserItem />
@@ -77,7 +77,7 @@ function Chat() {
       <Layout>
         <Header className="header">
           <div className="left">
-            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="" style={{borderradius: "50%"}} />   
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="" style={{borderradius: "50%"}} />
           </div>
           <div className="left">
             <h2 style={{color:"#bbb"}}>name</h2>
@@ -93,66 +93,38 @@ function Chat() {
         </Header>
         <Content style={{ margin: "90 20 90 30" }}>
           <ul id="chat">
-          <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {true} ></MessageItem>
-            <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {true} ></MessageItem>
-            <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {false} ></MessageItem>
-            <li class="you">
-              <div class="entete">
-                <span class="status green"></span>
-                <h2>Vincent</h2>
-                <h3>10:12AM, Today</h3>
-              </div>
-              <div class="triangle"></div>
-              <div class="message">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-              </div>
-            </li>
-            <li class="me">
-              <div class="entete">
-                <h3>10:12AM, Today</h3>
-                <h2>Vincent</h2>
-                <span class="status blue"></span>
-              </div>
-              <div class="triangle"></div>
-              <div class="message">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-              </div>
-            </li>
-            <li class="me">
-              <div class="entete">
-                <h3>10:12AM, Today</h3>
-                <h2>Vincent</h2>
-                <span class="status blue"></span>
-              </div>
-              <div class="triangle"></div>
-              <div class="message">
-                OK
-              </div>
-            </li>
+          {
+            [
+              {Sendername: "yu-shih", Time: "sunday afternoon", Message: "i'm full !!", isI: true},
+              {Sendername: "yu-shih", Time: "sunday afternoon", Message: "i'm full !!", isI: true},
+              {Sendername: "yu-shih", Time: "sunday afternoon", Message: "i'm full !!", isI: false},
+              {Sendername: "Vincent", Time: "10:12AM, Today", Message: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.", isI: false},
+              {Sendername: "Vincent", Time: "10:12AM, Today", Message: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.", isI: true},
+              {Sendername: "Vincent", Time: "10:12AM, Today", Message: "OK", isI: true},
+            ].map(msg => <MessageItem {...msg} />)
+          }
           </ul>
         </Content>
-        <Footer className="Footer" 
-        style={{backgroundColor: "#102a52" ,margin:"1 2 3 5"
-        
-        }}>
+        <Footer className="Footer" style={{ backgroundColor: "#102a52", margin: "1 2 3 5" }}>
           <div>
-          <Button type="primary" icon={<HeartOutlined />}>
-            Sticker
-          </Button>
+            <Button type="primary" icon={<HeartOutlined />}>
+              Sticker
+            </Button>
           </div>
-            <div>
-              <Input placeholder="Type your message"/>
-            </div>
-            <div>
-          <Button type="primary" icon={<SendOutlined />} style={{ margin:"8 8 8 9" }}>
-            Send
-          </Button>
-            </div>
           <div>
-          <Upload name="logo" action="/upload.do" listType="picture">
-          <Button icon={<UploadOutlined />} 
-         >Photos</Button>
-          </Upload>
+            <Input placeholder="Type your message" />
+          </div>
+          <div>
+            <Button type="primary" icon={<SendOutlined />} style={{ margin: "8 8 8 9" }}>
+              Send
+            </Button>
+          </div>
+          <div>
+            <Upload name="logo" action="/upload.do" listType="picture">
+              <Button icon={<UploadOutlined />}>
+                Photos
+              </Button>
+            </Upload>
           </div>
         </Footer>
       </Layout>

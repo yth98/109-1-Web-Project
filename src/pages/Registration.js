@@ -57,7 +57,7 @@ function Registration() {
       </div>
       <div className="Registration-avatar">
         <img alt="" src={avatar} />
-        <UploadHead/>
+        <UploadHead />
       </div>
       <Form onFinish={doReg} {...layout}>
         <Form.Item
@@ -101,7 +101,7 @@ function Registration() {
           onChange={(e) => setUsername(e.target.value)}
         />
         </Form.Item>
-        <Form.Item {...tailLayout} >
+        <Form.Item {...tailLayout}>
           <Button className="Confirm-btn" type="primary" htmlType="submit">確認</Button>
         </Form.Item>
       </Form>
