@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import useChat from "./useChat"
-import { Upload, Layout, Button, Input, message, Tag, Menu, Breadcrumb, Tooltip ,} from "antd"
+import { Upload, Layout, Button, Input, message, Menu, Tooltip } from "antd"
 import UserItem from "../components/Useritem"
 import AddUserItem from "../components/AddUseritem"
 import MessageItem from "../components/MessageItem"
@@ -51,7 +51,7 @@ function Chat() {
     }
   }
 
-  const normFile = (e: any) => {
+  const normFile = (e) => {
     console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
@@ -77,7 +77,7 @@ function Chat() {
       <Layout>
         <Header className="header">
           <div className="left">
-            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt=""/>   
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="" style={{borderradius: "50%"}} />   
           </div>
           <div className="left">
             <h2 style={{color:"#bbb"}}>name</h2>
@@ -93,7 +93,9 @@ function Chat() {
         </Header>
         <Content style={{ margin: "90 20 90 30" }}>
           <ul id="chat">
+          <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {true} ></MessageItem>
             <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {true} ></MessageItem>
+            <MessageItem Sendername = "yu-shih" Time = "sunday afternoon" Message = "i'm full !!" isI = {false} ></MessageItem>
             <li class="you">
               <div class="entete">
                 <span class="status green"></span>

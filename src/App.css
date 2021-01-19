@@ -143,6 +143,8 @@ aside li h3{
   margin-top: 0 px;
 }
 
+
+
 .status{
   width: 8px;
   height: 8px;
@@ -175,10 +177,10 @@ main header > *{
 main header img{
   border-radius: 50%;
 }
-main header img: last-child{
+/* main header img: last-child{
   width: 24px;
   margin-top: 8px;
-}
+} */
 main header div{
   display: inline;
   margin-left: 10px;
@@ -199,6 +201,10 @@ header .left {
   float: left;
   margin-right: 12px;
 }
+header .left img{
+  border-radius: 50%;
+}
+
 header .right {
   display: block;
   float: right;
@@ -210,8 +216,8 @@ header .right {
   margin: 0;
   list-style-type: none;
   overflow-y: scroll;
-  /* height:    830px; */
-  height: auto;
+  height:    420px;
+  /* height: auto; */
   border-top: 2px solid #fff;
 }
 #chat li{
