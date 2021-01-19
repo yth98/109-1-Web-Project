@@ -1,0 +1,92 @@
+type Query {
+    user(uid: String!): User
+    conversations(uid: String!): [Conversation]!
+    messages(conv: String!): [Message!]!
+    messagesUser(uid: String!, keyword: String!): [Message!]!
+    messagesConv(conv: String!, keyword: String!): [Message!]!
+}
+
+type Mutation {
+    createUser(data: CreateUserInput!): User!
+    createConversation(data: CreateConversationInput!): Conversation!
+    deleteConversation(_id: String!): Conversation!
+    createMessage(data: CreateMessageInput!): Message!
+    deleteMessage(_id: String!): Message!
+    updateMessage(_id: String!, data: UpdateMessageInput!): Message!
+}
+
+type Subscription {
+    conversation(uid: String!): ConversationSubscriptionPayload!
+    message(uid: String!): MessageSubscriptionPayload!
+}
+
+type ConversationSubscriptionPayload {
+    mutation: MutationType!
+    payload: Conversation!
+}
+
+type MessageSubscriptionPayload {
+    mutation: MutationType!
+    payload: Message!
+}
+
+enum MutationType {
+    CREATED
+    DELETED
+    UPDATED
+}
+
+input CreateUserInput {
+    uid: String!
+    pass: String!
+    name: String!
+    photo: String
+}
+
+input CreateConversationInput {
+    member_1: String!
+    member_2: String!
+}
+
+input CreateMessageInput {
+    conv: String!
+    send: String!
+    type: MessageType!
+    body: String!
+}
+
+input UpdateMessageInput {
+    body: String!
+}
+
+type User {
+    _id: String!
+    uid: String!
+    name: String!
+    photo: String!
+}
+
+type Conversation {
+    _id: String!
+    member_1: String!
+    member_2: String!
+    recent: Date!
+}
+
+type Message {
+    _id: String!
+    conv: String!
+    send: String!
+    type: MessageType!
+    body: String!
+    time: Date!
+}
+
+enum MessageType {
+    TEXT
+    IMAGE
+    STICKER
+    ATTACHMENT
+}
+
+scalar Date

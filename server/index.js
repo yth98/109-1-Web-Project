@@ -11,10 +11,11 @@ const WebSocket = require('ws')
 
 const ApiRoute = require('./routes/api')
 
-const User = require('./models/user')
-const Conversation = require('./models/conversation')
-const Message = require('./models/message')
+const { User, Conv, Message } = require('./models')
+const { Query, Mutation, Subscription } = require('./resolvers')
+const { GraphQLServer, PubSub } = require('graphql-yoga')
 
+// express
 const app = express()
 const server = http.createServer(app)
 const wss = new WebSocket.Server({ server })
@@ -27,6 +28,7 @@ app.use(express.static(buildPath))
 app.use('/api', ApiRoute)
 app.get('/*', (req, res) => res.sendFile(buildPath + '/index.html'))
 
+// Mongoose
 if (!process.env.MONGO_URL) {
   console.error('Missing MONGO_URL!!!')
   process.exit(1)
@@ -36,6 +38,7 @@ mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
+mongoose.set('useCreateIndex', true)
 
 const db = mongoose.connection
 
@@ -46,6 +49,25 @@ db.on('error', (error) => {
 db.once('open', () => {
   console.log('MongoDB connected!')
 
+  // GraphQL
+  const pubsub = new PubSub()
+  const server = new GraphQLServer({
+    typeDefs: './server/schema.graphql',
+    resolvers: {
+      Query,
+      Mutation,
+      Subscription
+    },
+    context: {
+      User,
+      Conv,
+      Message,
+      pubsub
+    }
+  })
+  server.start({port: 4200}, () => console.log('GraphQL server is running on localhost:4200'))
+
+  // WebSocket
   wss.on('connection', ws => {
     let connectionInfo = null
 
@@ -63,7 +85,7 @@ db.once('open', () => {
       const [task, payload] = JSON.parse(data)
 
       switch (task) {
-        case 'init' : {
+        case 'auth' : {
           if (payload.credential === 'secret') {
             connectionInfo = { user: payload.user_id, conv: payload.conv_id }
             sendData(['authSuccess', { user: connectionInfo.user }])
@@ -77,55 +99,9 @@ db.once('open', () => {
           } else sendStatus({ type: 'danger', msg: 'Authorization failed.' })
           break
         }
-        case 'input': {
-          if (connectionInfo === null) {
-            sendStatus({ type: 'danger', msg: 'You have no permission to send messages.' })
-            break
-          }
-          const newMessage = {
-            ...payload[0],
-            conversation_id: connectionInfo.conv,
-            sender: connectionInfo.user,
-            timestamp: Date.now(),
-          }
-          Message.insertMany([newMessage], (err) => {
-            if (err) throw err
-            Message.find()
-              .limit(100)
-              .sort({ _id: 1 })
-              .exec((err, res) => {
-                if (err) throw err
-                let I = res.findIndex(d => d._id===payload[1])
-                if (I >= 0)
-                  sendData(['output', res.slice(I+1)])
-                else {
-                  sendData(['cleared'])
-                  sendData(['output', res])
-                }
-              })
-          })
-          break
-        }
-        case 'clear': {
-          if (connectionInfo === null) {
-            sendStatus({ type: 'danger', msg: 'You have no permission to clear messages.' })
-            break
-          }
-          Message.deleteMany({}, () => {
-            sendData(['cleared'])
-            sendStatus({ type: 'info', msg: 'Messages cleared.' })
-          })
-          break
-        }
         default:
           break
       }
     }
-  })
-
-  const PORT = process.env.port || 4000
-
-  server.listen(PORT, () => {
-    console.log(`Listening on http://localhost:${PORT}`)
   })
 })

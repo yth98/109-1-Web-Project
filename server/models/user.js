@@ -3,23 +3,20 @@ const Schema = mongoose.Schema
 
 // Creating a schema, sort of like working with an ORM
 const UserSchema = new Schema({
-	user_id: {
+	uid: {
 		type: String,
-		required: [true, 'User ID is required.']
+		required: [true, 'User ID is required.'],
+		unique: true
 	},
 	password_hash: {
 		type: String,
 		required: true
 	},
-	password_salt: {
+	name: {
 		type: String,
-		required: true
+		required: [true, 'User name is required.']
 	},
-	user_name: {
-		type: String,
-		required: [true, 'Body field is required.']
-	},
-	user_photo: { type: String }
+	photo: { type: String },
 })
 
 // Creating a table within database with the defined schema

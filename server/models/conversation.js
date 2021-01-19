@@ -11,10 +11,10 @@ const ConversationSchema = new Schema({
 		type: String,
 		required: true
 	},
-	last_update: {
+	recent: {
 		type: Date,
 		required: true
-	}
+	},
 })
 
 // Creating a table within database with the defined schema

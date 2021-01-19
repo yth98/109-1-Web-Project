@@ -1,13 +1,14 @@
+const { ObjectID } = require('mongodb')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 // Creating a schema, sort of like working with an ORM
 const MessageSchema = new Schema({
-	conversation_id: {
-		type: String,
+	conv: {
+		type: ObjectID,
 		required: true
 	},
-	sender: {
+	send: {
 		type: String,
 		required: true
 	},
@@ -19,10 +20,10 @@ const MessageSchema = new Schema({
 		type: String,
 		required: [true, 'Body field is required.']
 	},
-	timestamp: {
+	time: {
 		type: Date,
 		required: true
-	}
+	},
 })
 
 // Creating a table within database with the defined schema
