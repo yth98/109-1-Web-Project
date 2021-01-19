@@ -12,8 +12,8 @@ const useLogin = () => {
   const changeId = async (Id) => {
     setId(Id)
     if (Id.length) {
-      instance.get('/avatar', { params: { Id } })
-      .then(res => setAvatar(res.data.url))
+      instance.get('/profile', { params: { Id } })
+      .then(res => setAvatar(res.data.avatar))
       .catch(err => console.log(err))
     }
     else setAvatar(null)

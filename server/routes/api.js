@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const models = require('../models')
+
 const cookieOptions = {
   maxAge: 604800,
   signed: true,
@@ -11,46 +13,45 @@ router.get('/', (req, res) => {
   res.send('Hello world!')
 })
 
-router.get('/avatar', (req, res) => {
-  if (req.query.Id) {
-    let url
-    switch (req.query.Id) {
-      case 'alice':
-        url = 'https://s.yimg.com/ob/image/8b867e11-d4b7-4492-95b0-66aa3f04efd4.jpg'
-        break
-      case 'bob':
-        url = 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Bob_the_builder.jpg/220px-Bob_the_builder.jpg'
-        break
-      default:
-        url = 'https://i.imgur.com/YENBp8x.jpg'
-    }
-    res.send({ url })
-  }
-  else
-    res.status(404).send({ url: false, msg: 'The requested avatar is unavailable.' })
-})
-
 router.post('/register', (req, res) => {
-  res.send('register')
+  console.log('API reg', req.body)
+  res.send({ status: true })
 })
 
 router.post('/login', (req, res) => {
-  console.log(req.body.id, req.body.password, req.signedCookies)
+  console.log('API login', req.body.id, req.body.password, req.signedCookies.cred)
   res.cookie('cred', req.body.id+'@'+req.body.password, cookieOptions)
   res.send({ status: true })
 })
 
 router.post('/logout', (req, res) => {
-  console.log(req.signedCookies)
+  console.log('API logout', req.signedCookies.cred)
   res.clearCookie('cred')
   res.send({ status: true })
 })
 
-router.post('/updateProfile', (req, res) => {
+router.get('/profile', (req, res) => {
+  console.log('API profile', req.query.Id)
+  if (req.query.Id) {
+    let username, avatar
+    switch (req.query.Id) {
+      default:
+        username = 'Serval Cat'
+        avatar = 'https://i.imgur.com/YENBp8x.jpg'
+    }
+    res.send({ user_id: req.query.Id, username, avatar })
+  }
+  else
+    res.status(404).send({ user_id: false, msg: 'The requested profile is unavailable.' })
+})
+
+router.post('/profile', (req, res) => {
+  console.log('API profile update', req.body)
   res.send('update profile')
 })
 
-router.get('/listFriends', (req, res) => {
+router.get('/friends', (req, res) => {
+  console.log('API friends', req.query.Id)
   res.send('list friends')
 })
 

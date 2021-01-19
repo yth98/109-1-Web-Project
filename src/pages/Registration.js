@@ -6,7 +6,7 @@ import { set } from 'mongoose'
 import UploadHead from "../components/UploadHead"
 
 function Registration() {
-  const { id, password, username, avatar, status, changeId, setPassword, setUsername, doReg } = useReg()
+  const { id, password, username, avatar, status, setId, setPassword, setUsername, setAvatar, checkId, doReg } = useReg()
   const layout = {
     labelCol: {
       span: 8,
@@ -57,8 +57,6 @@ function Registration() {
       </div>
       <div className="Registration-avatar">
         <img alt="" src={avatar} />
-      </div>
-      <div>
         <UploadHead/>
       </div>
       <Form onFinish={doReg} {...layout}>
@@ -72,7 +70,8 @@ function Registration() {
         <Input
           value={id}
           placeholder="使用者ID EX：gmail"
-          onChange={(e) => changeId(e.target.value)}
+          onChange={(e) => setId(e.target.value)}
+          onBlur={checkId}
         />
         </Form.Item>
         <Form.Item

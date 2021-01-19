@@ -10,19 +10,17 @@ const useReg = () => {
   const [avatar, setAvatar] = useState(null)
   const [status, setStatus] = useState({})
 
-  const changeId = async (Id) => {
-    setId(Id)
-    if (Id.length) {
-      instance.get('/avatar', { params: { Id } })
-      .then(res => setAvatar(res.data.url))
+  const checkId = async () => {
+    if (id.length) {
+      instance.get('/profile', { params: { Id: id } })
+      .then(res => {if (res.data.user_id) setStatus({ type:'danger', msg:`This E-mail has been used.` })})
       .catch(err => console.log(err))
     }
-    else setAvatar(null)
   }
 
   const doReg = async () => {
     if (!id.length || !password.length) return
-    instance.post('/register', { id, password, username }, { withCredentials: true })
+    instance.post('/register', { id, password, username, avatar }, { withCredentials: true })
     .then(res => {
       if (res.data.status)
         setStatus({ type:'success', msg:`Welcome, ${id}.` })
@@ -38,9 +36,11 @@ const useReg = () => {
     username,
     avatar,
     status,
-    changeId,
+    setId,
     setPassword,
     setUsername,
+    setAvatar,
+    checkId,
     doReg
   }
 }
