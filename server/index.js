@@ -49,6 +49,12 @@ db.on('error', (error) => {
 db.once('open', () => {
   console.log('MongoDB connected!')
 
+  // RESTful API
+  const PORT = process.env.PORT || 4000
+  app.listen(PORT, () => {
+    console.log(`Listening on http://localhost:${PORT}`)
+  })
+
   // GraphQL
   const pubsub = new PubSub()
   const server = new GraphQLServer({
@@ -65,7 +71,8 @@ db.once('open', () => {
       pubsub
     }
   })
-  server.start({port: 4200}, () => console.log('GraphQL server is running on localhost:4200'))
+  const PORT_GQL = process.env.PORT_GQL || 4200
+  server.start({port: PORT_GQL}, () => console.log(`GraphQL server is running on localhost:${PORT_GQL}`))
 
   // WebSocket
   wss.on('connection', ws => {
