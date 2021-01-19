@@ -6,8 +6,6 @@ import { set } from 'mongoose';
 import UploadHead from "../components/UploadHead"
 function Registration() {
   const { id, password, avatar, status, changeId, setPassword, doLogin } = useLogin()
-  const [loading , setLoading] = useState()
-  const [imageUrl , setImageUrl] = useState()
   const layout = {
     labelCol: {
       span: 8,
@@ -58,9 +56,9 @@ function Registration() {
       <div className="Registration-avatar">
       <img alt="" src={avatar} />
       </div>
-      <div>
+      {/* <div>
       <UploadHead/>
-      </div>
+      </div> */}
       <Form onFinish={doLogin} {...layout}>
         <Form.Item 
         name="email"
