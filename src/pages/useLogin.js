@@ -8,6 +8,7 @@ const useLogin = () => {
   const [password, setPassword] = useState('')
   const [avatar, setAvatar] = useState(null)
   const [status, setStatus] = useState({})
+  const [success, setSuccess] = useState(false)
 
   const changeId = async (Id) => {
     setId(Id)
@@ -23,12 +24,10 @@ const useLogin = () => {
     if (!id.length || !password.length) return
     instance.post('/login', { id, password }, { withCredentials: true })
     .then(res => {
-      if (res.data.status)
-        setStatus({ type:'success', msg:`Hello, ${id}.` })
-      else
-        setStatus({ type:'danger', msg:`Incorrect password.` })
+      setSuccess(res.data.status)
+      if (!res.data.status) setStatus({ type: 'danger', msg: res.data.msg })
     })
-    .catch(err => console.log(err))
+    .catch(err => setStatus({ type: 'danger', msg: err.response.data.msg }))
   }
 
   return {
@@ -36,9 +35,10 @@ const useLogin = () => {
     password,
     avatar,
     status,
+    success,
     changeId,
     setPassword,
-    doLogin
+    doLogin,
   }
 }
 

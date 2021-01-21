@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
+import { useHistory, Redirect } from 'react-router-dom'
 import useLogin from './useLogin'
 import { Form, Button, Input, message } from 'antd'
 
 function Login() {
-  const { id, password, avatar, status, changeId, setPassword, doLogin } = useLogin()
+  const { id, password, avatar, status, success, changeId, setPassword, doLogin } = useLogin()
+  const history = useHistory()
 
   const displayStatus = (s) => {
     if (s.msg) {
@@ -34,6 +36,7 @@ function Login() {
 
   return (
     <div className="App">
+      {success ? <Redirect to={'/chat'} /> : <></>}
       <div className="App-title">
         <h1>iChat</h1>
         <p>啟動愛聊生活</p>
@@ -56,7 +59,7 @@ function Login() {
         </Form.Item>
         <Form.Item>
           <Button className="Login-btn" type="primary" htmlType="submit">登入</Button>
-          <Button className="Registration-btn" type="primary" htmlType="submit" style={{ margin: '0 8px', }}>註冊</Button>
+          <Button className="Registration-btn" type="primary" style={{ margin: '0 8px', }} onClick={() => history.push('/registration')}>註冊</Button>
         </Form.Item>
       </Form>
     </div>

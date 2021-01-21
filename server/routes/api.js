@@ -29,10 +29,19 @@ router.post('/register', async (req, res) => {
   .catch(err => res.status(404).send({ status: false, msg: err.message }))
 })
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   console.log('API login', req.body.id, req.body.password, req.signedCookies.cred)
-  res.cookie('cred', req.body.id+'@'+req.body.password, cookieOptions)
-  res.send({ status: true })
+  if (req.body.id && req.body.id.length && req.body.password && req.body.password.length) {
+    const user = await models.User.findOne({uid: req.body.id})
+    if (!user || !await bcrypt.compare(req.body.password, user.password_hash))
+      res.status(403).send({ status: false, msg: '登入ID或密碼錯誤。' })
+    else {
+      res.cookie('cred', req.body.id+'@'+req.body.password, cookieOptions)
+      res.send({ status: true })
+    }
+  }
+  else
+    res.status(403).send({ status: false, msg: '請輸入帳號和密碼。' })
 })
 
 router.post('/logout', (req, res) => {
@@ -46,7 +55,6 @@ router.get('/profile', async (req, res) => {
   if (req.query.Id) {
     let username = 'Serval Cat', avatar = 'https://i.imgur.com/YENBp8x.jpg'
     const user = await models.User.findOne({uid: req.query.Id})
-    console.log(user)
     if (user) [username, avatar] = [user.name, user.photo]
     res.send({ user_id: user ? user.uid : false, username, avatar })
   }
