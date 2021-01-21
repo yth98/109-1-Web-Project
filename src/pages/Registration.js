@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
+import { Redirect } from 'react-router-dom'
 import useReg from './useRegistration'
 import { Form, Button, Input, message, Upload } from 'antd'
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
-import { set } from 'mongoose'
-import UploadHead from "../components/UploadHead"
+import UploadHead from '../components/UploadHead'
 
 function Registration() {
-  const { id, password, username, avatar, status, setId, setPassword, setUsername, setAvatar, checkId, doReg } = useReg()
+  const { id, password, username, avatar, status, success, setId, setPassword, setUsername, setAvatar, checkId, doReg } = useReg()
   const layout = {
     labelCol: {
       span: 8,
@@ -24,13 +23,11 @@ function Registration() {
 
   const displayStatus = (s) => {
     if (s.msg) {
-      const { type, msg } = s
       const content = {
-        content: msg,
-        duration: 0.5
+        content: s.msg,
+        duration: 0.8,
       }
-
-      switch (type) {
+      switch (s.type) {
         case 'success':
           message.success(content)
           break
@@ -51,9 +48,10 @@ function Registration() {
 
   return (
     <div className="App">
+      {success ? <Redirect to={'/chat'} /> : <></>}
       <div className="App-title">
         <h1>iChat 註冊</h1>
-        <p>歡迎啟動愛聊生活</p>
+        <p>愛聊生活，就從今天開始</p>
       </div>
       <div className="Registration-avatar">
         <img alt="" src={avatar} />
