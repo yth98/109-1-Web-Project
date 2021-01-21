@@ -5,6 +5,7 @@ import { Upload, Layout, Button, Input, message, Menu, Tooltip } from "antd"
 import UserItem from "../components/Useritem"
 import AddUserItem from "../components/AddUseritem"
 import MessageItem from "../components/MessageItem"
+import StickerItem from "../components/Stickeritem"
 import {
   HeartOutlined,
   SendOutlined,
@@ -37,6 +38,8 @@ function Chat() {
     searchInUser,
     searchInConv,
   } = useChat()
+
+  
 
   const { Header, Footer, Sider, Content } = Layout
   const { SubMenu } = Menu
@@ -178,9 +181,10 @@ function Chat() {
         </Content>
         <Footer id="Chat-footer" style={{ backgroundColor: "#102a52", margin: "1 2 3 5" }}>
           <div>
-            <Button type="primary" icon={<HeartOutlined />}>
+            {/* <Button type="primary" icon={<HeartOutlined />}>
               Sticker
-            </Button>
+            </Button> */}
+            <StickerItem/>
           </div>
           <div style={{ flex: "auto" }}>
             <Input value={msg} placeholder="Type your message" onChange={e => setMsg(e.target.value)} onPressEnter={sendText} />
