@@ -1,18 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import axios from 'axios'
+
+const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
 
 const UserItem = props => {
-  const { PictureURL, Name, isOnline, LatestMessage, onClick } = props
+  const { UID, isOnline, onClick, isConversataion } = props
   let StatusColor = (isOnline === true) ? "status green" : "status orange"
   let Status = (isOnline === true) ? "online" : "offline"
-  let latestmessage = LatestMessage
+  let [PictureURL, setPicture] = useState('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg')
+  let [Name, setName] = useState('')
+  let [Message, setMessage] = useState('I\'m keeping going until dead line coming')
+
+  useEffect(() => {
+    instance.get('/profile', { params: { Id: UID } })
+    .then(res => {
+      if (res.data.user_id) {
+        setName(res.data.username)
+        setPicture(res.data.avatar)
+        setMessage('going until deadline')
+        console.log(res.data)
+      }
+    })
+    .catch(err => console.log(err))
+  },
+  [UID])
 
   return (
-    <li onClick={onClick}>
+    <li key={UID} className={isConversataion?"conv-item":undefined} onClick={onClick}>
       <img src={PictureURL} alt={Name} />
       <div>
         <h2>{Name}</h2>
-        <h2>{(latestmessage.length > 10)?(latestmessage.substring(0,9)+' ...'):(latestmessage)}</h2>
+        <h2 style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{Message}</h2>
       </div>
       <h3>
         <span className={StatusColor}></span>

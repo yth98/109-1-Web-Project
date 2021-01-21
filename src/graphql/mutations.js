@@ -8,6 +8,7 @@ mutation createConversation(
   createConversation(
     data: { member_1: $member1, member_2: $member2 }
   ) {
+    _id
     member_1
     member_2
     recent

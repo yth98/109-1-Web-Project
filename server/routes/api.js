@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const models = require('../models')
+const bcrypt = require('bcrypt')
 
 const cookieOptions = {
   maxAge: 604800,
@@ -13,9 +14,19 @@ router.get('/', (req, res) => {
   res.send('Hello world!')
 })
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
   console.log('API reg', req.body)
-  res.send({ status: true })
+  models.User.create({
+    uid: req.body.id,
+    password_hash: await bcrypt.hash(req.body.password, 10),
+    name: req.body.username,
+    photo: (!req.body.avatar || !req.body.avatar.length ) ? '/favicon.ico' : req.body.avatar,
+  })
+  .then(user => {
+    res.cookie('cred', user.uid+'@'+user.password_hash, cookieOptions)
+    res.send({ status: true })
+  })
+  .catch(err => res.status(404).send({ status: false, msg: err.message }))
 })
 
 router.post('/login', (req, res) => {
@@ -30,16 +41,14 @@ router.post('/logout', (req, res) => {
   res.send({ status: true })
 })
 
-router.get('/profile', (req, res) => {
+router.get('/profile', async (req, res) => {
   console.log('API profile', req.query.Id)
   if (req.query.Id) {
-    let username, avatar
-    switch (req.query.Id) {
-      default:
-        username = 'Serval Cat'
-        avatar = 'https://i.imgur.com/YENBp8x.jpg'
-    }
-    res.send({ user_id: req.query.Id, username, avatar })
+    let username = 'Serval Cat', avatar = 'https://i.imgur.com/YENBp8x.jpg'
+    const user = await models.User.findOne({uid: req.query.Id})
+    console.log(user)
+    if (user) [username, avatar] = [user.name, user.photo]
+    res.send({ user_id: user ? user.uid : false, username, avatar })
   }
   else
     res.status(404).send({ user_id: false, msg: 'The requested profile is unavailable.' })

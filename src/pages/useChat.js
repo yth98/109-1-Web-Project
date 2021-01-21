@@ -3,6 +3,7 @@ import { USER_QUERY, CONVS_QUERY, MSGS_QUERY, MSGS_IN_USER_CONVS_QUERY, MSGS_IN_
 import { CREATE_CONV_MUT, CREATE_MSG_MUT, UPDATE_MSG_MUT, DELETE_MSG_MUT } from '../graphql'
 import { CONV_SUB, MSG_SUB } from '../graphql'
 import { useQuery, useMutation } from '@apollo/client'
+import axios from 'axios'
 
 const client = new WebSocket('ws://localhost:4000')
 
@@ -19,11 +20,29 @@ const useChat = () => {
   const Messages = useQuery(MSGS_QUERY, {variables: { conv }})
   const MessagesInUser = useQuery(MSGS_IN_USER_CONVS_QUERY, {variables: { uid, keyword }})
   const MessagesInConv = useQuery(MSGS_IN_CONV_QUERY, {variables: { conv, keyword }})
+  const [createConversation] = useMutation(CREATE_CONV_MUT)
   const [createMessage] = useMutation(CREATE_MSG_MUT)
   const [modifyMessage] = useMutation(UPDATE_MSG_MUT)
   const [deleteMessage] = useMutation(DELETE_MSG_MUT)
 
-  // useEffect(() => Conversations.refetch(), [Conversations, Conversations.refetch, uid])
+  const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
+
+  const addUser = async UID => {
+    if (UID.length) {
+      instance.get('/profile', { params: { Id: UID } })
+      .then(res => {
+        if (res.data.user_id)
+          createConversation({ variables: { member1: uid, member2: res.data.user_id } })
+          .then(user => setConversation(user.data._id))
+          .catch(err => setStatus({ type: "danger", msg: err.message }))
+        else
+          setStatus({ type: "info", msg: "沒這個人！" })
+      })
+      .catch(err => console.log(err))
+    }
+  }
+
+  useEffect(() => Conversations.refetch(), [Conversations.refetch, uid])
   useEffect(() => {
     const unsubscribe = Conversations.subscribeToMore({
       document: CONV_SUB,
@@ -50,6 +69,7 @@ const useChat = () => {
               ].sort((a, b) => new Date(b.recent) - new Date(a.recent)) : prev.conversations
             }
           case 'DELETED':
+            if (conv === subscriptionData.data.conversation.payload._id) setConversation('')
             return {
               ...prev,
               conversations: prev.conversations.filter(message => message._id !== subscriptionData.data.conversation.payload._id)
@@ -75,7 +95,7 @@ const useChat = () => {
   [TalkingToUser.refetch, uid2])
 
   useEffect(() => {
-    if (conv.length) Messages.refetch()
+    if (conv && conv.length) Messages.refetch()
     setSearch(0)
   },
   [Messages.refetch, conv])
@@ -128,10 +148,12 @@ const useChat = () => {
 
   const searchCancel = () => setSearch(0)
   const searchInUser = keyword => {
+    if (!keyword.length) { setSearch(0); return }
     setKeyword(keyword)
     setSearch(1)
   }
   const searchInConv = keyword => {
+    if (!keyword.length) { setSearch(0); return }
     setKeyword(keyword)
     setSearch(2)
   }
@@ -167,7 +189,9 @@ const useChat = () => {
       !Messages.data || Messages.data.messages
     ),
     search,
+    keyword,
     setUID,
+    addUser,
     setConversation,
     sendMessage,
     modifyMessage,

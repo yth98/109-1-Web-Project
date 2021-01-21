@@ -7,8 +7,9 @@ import MessageItem from "../components/MessageItem"
 import {
   HeartOutlined,
   SendOutlined,
-  SearchOutlined,
   UploadOutlined,
+  CloseOutlined,
+  SearchOutlined,
 } from "@ant-design/icons"
 
 function Chat() {
@@ -21,7 +22,9 @@ function Chat() {
     messages_ready,
     messages,
     search,
+    keyword,
     setUID,
+    addUser,
     setConversation,
     sendMessage,
     modifyMessage,
@@ -44,9 +47,9 @@ function Chat() {
     const other = conv.member_2 === uid ? conv.member_1 : conv.member_2
     return <UserItem
       key={other}
-      PictureURL={other}
-      Name={other}
-      isOnline={true}
+      UID={other}
+      isOnline
+      isConversataion
       onClick={() => setConversation(conv._id)}
     />
   }
@@ -90,7 +93,7 @@ function Chat() {
     if (status.msg) {
       const content = {
         content: status.msg,
-        duration: 0.5,
+        duration: 0.8,
       }
       switch (status.type) {
         case "success":
@@ -108,12 +111,12 @@ function Chat() {
   }, [status])
 
   return (
-    <Layout>
+    <Layout style={{ height: "100vh" }}>
       {/* <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} > */}
       <Sider>
-        <ul>
-          <UserItem Name="Alice" LatestMessage="" />
-          <AddUserItem Value={[adduser, setAdduser]} />
+        <ul id="conv">
+          <UserItem UID={uid} />
+          <AddUserItem onSearch={addUser} />
           {
             conversations_ready
             ? conversations.map(conv => userItems(conv))
@@ -122,39 +125,52 @@ function Chat() {
         </ul>
       </Sider>
       <Layout>
-        <Header className="header">
+        <Header id="Chat-header">
           {
             talking ? <>
-              <div className="left">
-                <img src={talking.photo} alt={talking.name} style={{borderradius: "50%"}} />
+              <div className="left" style={{ width: 55, textAlign: "center" }}>
+                <img src={talking.photo} alt={talking.name} />
               </div>
-              <div className="left">
-                <h2 style={{color:"#bbb"}}>{talking.name}</h2>
+              <div className="left" style={{ flexShrink: 0, width: "max-content" }}>
+                <h2>{talking.name}</h2>
               </div>
             </> : <></>
           }
+          <div style={{flexGrow: 1}} />
+          {
+            search
+            ?
+              <div className="right">
+                <Button shape="circle" icon={<CloseOutlined />} onClick={searchCancel} />
+              </div>
+            :
+              <></>
+          }
+          <div className="right" style={{ flexShrink: 1 }}>
+            <Input onChange={e => setWord(e.target.value)} onPressEnter={() => searchInConv(word)} />
+          </div>
           <div className="right">
             <Tooltip title="search">
               <Button shape="circle" icon={<SearchOutlined />} onClick={() => searchInConv(word)} />
             </Tooltip>
-          </div>
-          <div className="right">
-            <Input onChange={e => setWord(e.target.value)} onPressEnter={() => searchInConv(word)} />
-          </div>
-          <div className="right" style={{color: "white"}}>
-            {search ? "[Searching]" : ""}
           </div>
         </Header>
         <Content style={{ margin: "90 20 90 30" }}>
           <ul id="chat">
           {
             messages_ready
-            ? messages.map(msg => messageItems(msg))
+            ? messages.length
+              ? messages.map(msg => messageItems(msg))
+              : <div style={{ textAlign: "center", padding: "30vh 0" }}>{
+                  search
+                  ? `沒有符合 ${keyword} 的結果。`
+                  : `快來開始你和 ${talking.name} 的對話...`
+                }</div>
             : <></>
           }
           </ul>
         </Content>
-        <Footer className="Footer" style={{ backgroundColor: "#102a52", margin: "1 2 3 5" }}>
+        <Footer id="Chat-footer" style={{ backgroundColor: "#102a52", margin: "1 2 3 5" }}>
           <div>
             <Button type="primary" icon={<HeartOutlined />}>
               Sticker

@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Input } from 'antd'
 
 const AddUserItem = props => {
-  const [id, changeId] = props.Value
+  const { onSearch } = props
+  const [id, changeId] = useState('')
   return (
     <li>
       <div display="inline-block">
         <Input.Search
           value={id}
-          placeholder="findID"
+          placeholder="Find users..."
           onChange={e => changeId(e.target.value)}
+          onSearch={() => onSearch(id)}
         />
       </div>
     </li>
