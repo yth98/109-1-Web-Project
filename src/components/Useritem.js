@@ -12,12 +12,12 @@ const UserItem = props => {
 
   useEffect(() => {
     if (!UID || !UID.length) return
-    instance.get('/profile', { params: { Id: UID } })
+    instance.get('/profile', { params: { Id: UID }, withCredentials: true })
     .then(res => {
       if (res.data.user_id) {
         setName(res.data.username)
         setPicture(res.data.avatar)
-        setMessage('going until deadline')
+        setMessage(res.data.lastmsg)
       }
     })
     .catch(err => console.log(err))

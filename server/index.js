@@ -23,10 +23,12 @@ const HTTPserver = http.createServer(app)
 const wss = new WebSocket.Server({ server: HTTPserver })
 
 const URL_BASE = process.env.URL_BASE || 'localhost'
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 3000
+const PORT_SERVER = process.env.PORT_SERVER || 4000
 const PORT_GQL = process.env.PORT_GQL || 4200
 const buildPath = path.resolve(__dirname + '/../build')
-app.use(cors({ credentials: true, origin: process.env.URL_BASE || `http://${URL_BASE}:${PORT}` }))
+console.log(`Allow CORS from http://${URL_BASE}:${PORT}`)
+app.use(cors({ credentials: true, origin: `http://${URL_BASE}:${PORT}` }))
 app.use(bodyParser.json())
 app.use(cookieParser('7463847412'))
 app.use(express.static(buildPath))
@@ -55,8 +57,8 @@ db.once('open', () => {
   console.log('MongoDB connected!')
 
   // RESTful API
-  HTTPserver.listen(PORT, () => {
-    console.log(`Listening on http://localhost:${PORT}`)
+  HTTPserver.listen(PORT_SERVER, () => {
+    console.log(`Listening on http://localhost:${PORT_SERVER}`)
   })
 
   // GraphQL
@@ -92,7 +94,7 @@ db.once('open', () => {
 
     ws.onmessage = async (message) => {
       const { data } = message
-      console.log(data)
+      console.log('ws', data)
       const [task, payload] = JSON.parse(data)
 
       switch (task) {

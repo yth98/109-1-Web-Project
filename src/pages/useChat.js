@@ -235,7 +235,7 @@ const useChat = () => {
       setLogout(true)
     })
   },
-  [instance, uid, tokenready, Conversations])
+  [uid, tokenready, Conversations])
 
   // Logout
   const doLogout = () => {

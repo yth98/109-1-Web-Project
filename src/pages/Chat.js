@@ -49,13 +49,26 @@ function Chat() {
   const [word, setWord] = useState("")
   const [msg, setMsg] = useState("")
   const bodyRef = useRef(null)
-
+  const HandleEmojih = ()=>{
+    setMsg("😆")
+  }
+  const HandleEmojia = ()=>{
+    setMsg("🤬")
+  }
+  const HandleEmojis = ()=>{
+    setMsg("😖")
+  }
+  const HandleEmojic = ()=>{
+    setMsg("😭")
+  }
+  const HandleEmojil = ()=>{
+    setMsg("💕")
+  }
   const userItems = conv => {
     const other = conv.member_2 === uid ? conv.member_1 : conv.member_2
     return <UserItem
       key={other}
       UID={other}
-      isOnline
       isConversataion
       onClick={() => setConversation(conv._id)}
     />
@@ -179,18 +192,21 @@ function Chat() {
           }
           </ul>
         </Content>
-        <Footer id="Chat-footer" style={{ backgroundColor: "#102a52", margin: "1 2 3 5" }}>
+        <Footer id="Chat-footer">
           <div>
-            {/* <Button type="primary" icon={<HeartOutlined />}>
-              Sticker
-            </Button> */}
-            <StickerItem/>
+            <StickerItem
+              HandleEmojih={HandleEmojih}
+              HandleEmojia={HandleEmojia}
+              HandleEmojis={HandleEmojis}
+              HandleEmojic={HandleEmojic}
+              HandleEmojil={HandleEmojil}
+            />
           </div>
           <div style={{ flex: "auto" }}>
             <Input value={msg} placeholder="Type your message" onChange={e => setMsg(e.target.value)} onPressEnter={sendText} />
           </div>
           <div>
-            <Button type="primary" icon={<SendOutlined />} style={{ margin: "8 8 8 9" }} onClick={sendText}>
+            <Button type="primary" icon={<SendOutlined />} onClick={sendText}>
               Send
             </Button>
           </div>

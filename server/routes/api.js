@@ -50,13 +50,13 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/logout', (req, res) => {
-  console.log('API logout', req.signedCookies.cred)
+  console.log('API logout', !!req.signedCookies.cred)
   res.clearCookie('cred')
   res.send({ status: true })
 })
 
-router.get('/auth', (req, res) => {
-  console.log('API auth', req.signedCookies.cred)
+router.get('/auth', async (req, res) => {
+  console.log('API auth', !!req.signedCookies.cred)
   if (!req.signedCookies.cred) {
     res.send({ uid: false, msg: 'No credential in cookie.' })
     return
@@ -68,17 +68,47 @@ router.get('/auth', (req, res) => {
     res.send({ uid: false, msg: err.message })
     return
   }
-  if ('u' in auth && 'p' in auth) res.send({ uid: auth.u, msg: 'Authorized.' })
+  if ('u' in auth && 'p' in auth) {
+    const user = await models.User.findOne({uid: auth.u})
+    if (user && user.uid === auth.u && user.password_hash === auth.p)
+      res.send({ uid: auth.u, msg: 'Authorized.' })
+    else
+      res.send({ uid: false, msg: 'Credential is malformed.' })
+  }
   else res.send({ uid: false, msg: 'Credential is malformed.' })
 })
 
 router.get('/profile', async (req, res) => {
-  console.log('API profile', req.query.Id)
+  console.log('API profile', req.query.Id, !!req.signedCookies.cred)
   if (req.query.Id) {
-    let username = '(沒有這個帳號！)', avatar = 'https://i.imgur.com/YENBp8x.jpg'
+    let username = '(沒有這個帳號！)', avatar = 'https://i.imgur.com/YENBp8x.jpg', lastmsg
     const user = await models.User.findOne({uid: req.query.Id})
     if (user) [username, avatar] = [user.name, user.photo]
-    res.send({ user_id: user ? user.uid : false, username, avatar })
+    if (req.signedCookies.cred) {
+      let auth, self, conv, msg
+      try { auth = jwt.verify(req.signedCookies.cred, JWT_SECRET) }
+      catch (err) {}
+      if (auth && 'u' in auth && 'p' in auth && auth.u !== req.query.Id)
+        self = await models.User.findOne({uid: auth.u})
+      if (self && self.password_hash === auth.p) {
+        const member_1 = auth.u < req.query.Id ? auth.u : req.query.Id
+        const member_2 = auth.u > req.query.Id ? auth.u : req.query.Id
+        conv = await models.Conv.findOne({ member_1, member_2 })
+      }
+      if (conv) msg = await models.Message.find({conv: conv._id}).sort({time: -1}).limit(1)
+      if (msg && msg.length) switch (msg[0].type) {
+        case 'TEXT':
+        default:
+          lastmsg = msg[0].body; break
+        case 'IMAGE':
+          lastmsg = '(圖片)'; break
+        case "STICKER":
+          lastmsg = '(貼圖)'; break
+        case "ATTACHMENT":
+          lastmsg = '(附檔)'; break
+      }
+    }
+    res.send({ user_id: user ? user.uid : false, username, avatar, lastmsg })
   }
   else
     res.status(404).send({ user_id: false, msg: 'The requested profile is unavailable.' })
