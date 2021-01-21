@@ -44,14 +44,14 @@ function Login() {
           <Input
             value={id}
             placeholder="登入ID"
-            onChange={(e) => changeId(e.target.value)}
+            onChange={e => changeId(e.target.value)}
           />
         </Form.Item>
         <Form.Item>
           <Input.Password
             value={password}
             placeholder="密碼"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
           />
         </Form.Item>
         <Form.Item>

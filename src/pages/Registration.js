@@ -70,7 +70,7 @@ function Registration() {
         <Input
           value={id}
           placeholder="使用者ID EX：gmail"
-          onChange={(e) => setId(e.target.value)}
+          onChange={e => setId(e.target.value)}
           onBlur={checkId}
         />
         </Form.Item>
@@ -85,7 +85,7 @@ function Registration() {
         <Input.Password
           value={password}
           placeholder="密碼"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
         />
         </Form.Item>
         <Form.Item
@@ -98,7 +98,7 @@ function Registration() {
         <Input
           value={username}
           placeholder="使用者名稱"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={e => setUsername(e.target.value)}
         />
         </Form.Item>
         <Form.Item {...tailLayout}>

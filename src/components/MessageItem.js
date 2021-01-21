@@ -1,26 +1,25 @@
 import React from 'react'
 
 const MessageItem = props => {
-  const {Sendername, Time, Message, isI} = props
-  const MessageClass = isI ? "me" : "you"
+  const { Sendername, Time, Message, isI } = props
   return (
-    <li class={MessageClass}>
+    <li className={isI ? "me" : "you"}>
       {isI
         ?
-        <div class="entete">
+        <div className="entete">
           <h3>{Time}</h3>
           <h2>{Sendername}</h2>
-          <span class="status blue"></span>
+          <span className="status blue"></span>
         </div>
         :
-        <div class="entete">
-          <span class="status green"></span>
+        <div className="entete">
+          <span className="status green"></span>
           <h2>{Sendername}</h2>
           <h3>{Time}</h3>
         </div>
       }
-      <div class="triangle"></div>
-      <div class="message">
+      <div className="triangle"></div>
+      <div className="message">
         {Message}
       </div>
     </li>

@@ -1,15 +1,140 @@
-import { useState } from 'react'
-// import { w3cwebsocket as W3CWebSocket } from 'websocket'
+import { useEffect, useState } from 'react'
+import { USER_QUERY, CONVS_QUERY, MSGS_QUERY, MSGS_IN_USER_CONVS_QUERY, MSGS_IN_CONV_QUERY } from '../graphql'
+import { CREATE_CONV_MUT, CREATE_MSG_MUT, UPDATE_MSG_MUT, DELETE_MSG_MUT } from '../graphql'
+import { CONV_SUB, MSG_SUB } from '../graphql'
+import { useQuery, useMutation } from '@apollo/client'
 
-// const client = new W3CWebSocket('ws://localhost:4000')
 const client = new WebSocket('ws://localhost:4000')
 
 const useChat = () => {
-  const [username, setUsername] = useState(Math.random()>=0.5 ? 'Alice' : 'Bob')
   const [status, setStatus] = useState({})
-  const [opened, setOpened] = useState(false)
-  const [messages, setMessages] = useState([])
-  const [lastId, setLastId] = useState(0)
+  const [uid, setUID] = useState('alice')
+  const [uid2, setUID2] = useState('')
+  const [conv, setConversation] = useState('')
+  const [keyword, setKeyword] = useState('')
+  const [search, setSearch] = useState(0)
+
+  const Conversations = useQuery(CONVS_QUERY, {variables: { uid }})
+  const TalkingToUser = useQuery(USER_QUERY, {variables: { uid: uid2 }})
+  const Messages = useQuery(MSGS_QUERY, {variables: { conv }})
+  const MessagesInUser = useQuery(MSGS_IN_USER_CONVS_QUERY, {variables: { uid, keyword }})
+  const MessagesInConv = useQuery(MSGS_IN_CONV_QUERY, {variables: { conv, keyword }})
+  const [createMessage] = useMutation(CREATE_MSG_MUT)
+  const [modifyMessage] = useMutation(UPDATE_MSG_MUT)
+  const [deleteMessage] = useMutation(DELETE_MSG_MUT)
+
+  // useEffect(() => Conversations.refetch(), [Conversations, Conversations.refetch, uid])
+  useEffect(() => {
+    const unsubscribe = Conversations.subscribeToMore({
+      document: CONV_SUB,
+      variables: { uid },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+        switch (subscriptionData.data.conversation.mutation) {
+          case 'CREATED':
+            return {
+              ...prev,
+              conversations: [
+                ...prev.conversations,
+                subscriptionData.data.conversation.payload
+              ].sort((a, b) => new Date(b.recent) - new Date(a.recent))
+            }
+          case 'UPDATED':
+            const idx = prev.conversations.findIndex(msg => msg._id === subscriptionData.data.conversation.payload._id)
+            return {
+              ...prev,
+              conversations: idx >= 0 ? [
+                ...prev.conversations.slice(0,idx),
+                subscriptionData.data.conversation.payload,
+                ...prev.conversations.slice(idx+1),
+              ].sort((a, b) => new Date(b.recent) - new Date(a.recent)) : prev.conversations
+            }
+          case 'DELETED':
+            return {
+              ...prev,
+              conversations: prev.conversations.filter(message => message._id !== subscriptionData.data.conversation.payload._id)
+            }
+          default:
+            return prev
+        }
+      }
+    })
+    return () => unsubscribe()
+  },
+  [Conversations.subscribeToMore, uid])
+
+  useEffect(() => {
+    if (Conversations.loading || Conversations.error) return false
+    const c = Conversations.data.conversations.find(c => c._id === conv)
+    if (c) setUID2(uid === c.member_2 ? c.member_1 : c.member_2)
+  },
+  [Conversations, uid, conv])
+  useEffect(() => {
+    if (uid2.length) TalkingToUser.refetch()
+  },
+  [TalkingToUser.refetch, uid2])
+
+  useEffect(() => {
+    if (conv.length) Messages.refetch()
+    setSearch(0)
+  },
+  [Messages.refetch, conv])
+  useEffect(() => {
+    const unsubscribe = Messages.subscribeToMore({
+      document: MSG_SUB,
+      variables: { uid },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+        switch (subscriptionData.data.message.mutation) {
+          case 'CREATED':
+            return {
+              ...prev,
+              messages: [...prev.messages, subscriptionData.data.message.payload]
+            }
+          case 'UPDATED':
+            const idx = prev.messages.findIndex(msg => msg._id === subscriptionData.data.message.payload._id)
+            return {
+              ...prev,
+              messages: idx >= 0 ? [
+                ...prev.messages.slice(0,idx),
+                subscriptionData.data.message.payload,
+                ...prev.messages.slice(idx+1)
+              ] : prev.messages
+            }
+          case 'DELETED':
+            return {
+              ...prev,
+              messages: prev.messages.filter(message => message._id !== subscriptionData.data.message.payload._id)
+            }
+          default:
+            return prev
+        }
+      }
+    })
+    return () => unsubscribe()
+  },
+  [Messages.subscribeToMore, uid, conv])
+
+  useEffect(() => {
+    if (search === 1) MessagesInUser.refetch()
+    if (search === 2) MessagesInConv.refetch()
+  },
+  [keyword, search])
+
+  const sendMessage = (type, body) => {
+    if (uid.length && conv.length && body.length)
+      createMessage({ variables: { conv, send: uid, type, body } })
+  }
+
+  const searchCancel = () => setSearch(0)
+  const searchInUser = keyword => {
+    setKeyword(keyword)
+    setSearch(1)
+  }
+  const searchInConv = keyword => {
+    setKeyword(keyword)
+    setSearch(2)
+  }
 
   client.onmessage = (message) => {
     const { data } = message
@@ -17,28 +142,7 @@ const useChat = () => {
 
     switch (task) {
       case 'authSuccess': {
-        setUsername(() => payload.user)
-        setOpened(true)
-        break
-      }
-      case 'init': {
-        setMessages(() => payload)
-        if (payload.length)
-          setLastId(() => payload[payload.length-1]._id)
-        break
-      }
-      case 'output': {
-        setMessages(() => [...messages, ...payload])
-        if (payload.length)
-          setLastId(() => payload[payload.length-1]._id)
-        break
-      }
-      case 'status': {
-        setStatus(payload)
-        break
-      }
-      case 'cleared': {
-        setMessages([])
+        setUID(() => payload.user)
         break
       }
       default:
@@ -46,29 +150,31 @@ const useChat = () => {
     }
   }
 
-  client.onopen = () => {
-    sendData(['init', {user_id: username, conv_id: 'Alice_Bob', credential: 'secret'}])
-  }
-
-  const sendData = (data) => {
-    client.send(JSON.stringify(data))
-  }
-
-  const sendMessage = (msg) => {
-    sendData(['input', [msg, lastId]])
-  }
-
-  const clearMessages = () => {
-    sendData(['clear'])
-  }
-
   return {
-    username,
+    uid,
     status,
-    opened,
-    messages,
+    talking: !TalkingToUser.data || TalkingToUser.data.user,
+    conversations_ready: !Conversations.loading && !Conversations.error,
+    conversations: !Conversations.data || Conversations.data.conversations,
+    messages_ready: (
+      search === 2 ? !MessagesInConv.loading && !MessagesInConv.error :
+      search === 1 ? !MessagesInUser.loading && !MessagesInUser.error :
+      !Messages.loading && !Messages.error
+    ),
+    messages: (
+      search === 2 ? !MessagesInConv.data || MessagesInConv.data.messagesConv :
+      search === 1 ? !MessagesInUser.data || MessagesInUser.data.messagesUser :
+      !Messages.data || Messages.data.messages
+    ),
+    search,
+    setUID,
+    setConversation,
     sendMessage,
-    clearMessages
+    modifyMessage,
+    deleteMessage,
+    searchCancel,
+    searchInUser,
+    searchInConv,
   }
 }
 

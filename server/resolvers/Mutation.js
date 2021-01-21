@@ -25,10 +25,10 @@ const Mutation = {
     return conv
   },
   async createMessage(parent, { data }, { Conv, Message, pubsub }, info) {
-    const conv = await Conv.findOne({_id: data.conv, $or: [{member_1: data.send}, {member_2: data.send}]})
-    if (!conv) throw new Error("The conversation does not exist, or Sender is not in the conversation.")
+    const conv0 = await Conv.findOne({_id: data.conv, $or: [{member_1: data.send}, {member_2: data.send}]})
+    if (!conv0) throw new Error("The conversation does not exist, or Sender is not in the conversation.")
     const msg = await Message.create({...data, time: now()})
-    await Conv.updateOne({_id: data.conv}, {recent: msg.time})
+    const conv = await Conv.findByIdAndUpdate(data.conv, {recent: msg.time}, {new: true})
     pubsub.publish(`message-${conv.member_1}`, {message: {mutation: 'CREATED', payload: msg}})
     pubsub.publish(`message-${conv.member_2}`, {message: {mutation: 'CREATED', payload: msg}})
     pubsub.publish(`conv-${conv.member_1}`, {conversation: {mutation: 'UPDATED', payload: conv}})
