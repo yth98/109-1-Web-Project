@@ -32,7 +32,7 @@ Frontend(ReactJS):
 * antd
 * @ant-design/icons
 * axios
-<br><br/>
+
 Backend(NodeJS): 
 <br><br/>
 * mongoose
@@ -45,7 +45,7 @@ Backend(NodeJS):
 * graphql-yoga
 * http
 * path
-<br><br/>
+
 Database(MongoDB): 
 <br><br/>
 * MongoDB
