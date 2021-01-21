@@ -18,14 +18,19 @@
 }
 
 .Login-avatar {
-  margin: 20px 0 40px 0;
+  margin: 20px 0 0 0;
   height: 100px;
+  max-width: 200px;
 }
-
+.Login-username {
+  margin: 20px 0 30px 0;
+  height: 1em;
+}
 .Login-btn {
   display:inline-block !important;
   margin: auto;
 }
+
 .Registration-btn {
   display: inline-block !important;
   margin: '0 8px';
@@ -149,6 +154,7 @@ ul{
 #Chat-header img{
   margin: auto;
   border-radius: 50%;
+  max-width: 55px;
   max-height: 55px;
 }
 #Chat-header h2{

@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
     res.cookie('cred', user.uid+'@'+user.password_hash, cookieOptions)
     res.send({ status: true })
   })
-  .catch(err => res.status(404).send({ status: false, msg: err.message }))
+  .catch(err => res.status(403).send({ status: false, msg: err.code === 11000 ? '這個E-mail已經被註冊過了。' : err.message }))
 })
 
 router.post('/login', async (req, res) => {
@@ -53,7 +53,7 @@ router.post('/logout', (req, res) => {
 router.get('/profile', async (req, res) => {
   console.log('API profile', req.query.Id)
   if (req.query.Id) {
-    let username = 'Serval Cat', avatar = 'https://i.imgur.com/YENBp8x.jpg'
+    let username = '(沒有這個帳號！)', avatar = 'https://i.imgur.com/YENBp8x.jpg'
     const user = await models.User.findOne({uid: req.query.Id})
     if (user) [username, avatar] = [user.name, user.photo]
     res.send({ user_id: user ? user.uid : false, username, avatar })

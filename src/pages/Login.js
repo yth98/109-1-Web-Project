@@ -4,18 +4,16 @@ import useLogin from './useLogin'
 import { Form, Button, Input, message } from 'antd'
 
 function Login() {
-  const { id, password, avatar, status, success, changeId, setPassword, doLogin } = useLogin()
+  const { id, password, username, avatar, status, success, changeId, setPassword, doLogin } = useLogin()
   const history = useHistory()
 
   const displayStatus = (s) => {
     if (s.msg) {
-      const { type, msg } = s
       const content = {
-        content: msg,
-        duration: 0.5
+        content: s.msg,
+        duration: 0.8,
       }
-
-      switch (type) {
+      switch (s.type) {
         case 'success':
           message.success(content)
           break
@@ -42,6 +40,7 @@ function Login() {
         <p>啟動愛聊生活</p>
       </div>
       <img className="Login-avatar" alt="" src={avatar} />
+      <h3 className="Login-username">{username}</h3>
       <Form onFinish={doLogin}>
         <Form.Item>
           <Input

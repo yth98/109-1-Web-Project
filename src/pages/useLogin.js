@@ -6,6 +6,7 @@ const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
 const useLogin = () => {
   const [id, setId] = useState('')
   const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
   const [avatar, setAvatar] = useState(null)
   const [status, setStatus] = useState({})
   const [success, setSuccess] = useState(false)
@@ -14,10 +15,16 @@ const useLogin = () => {
     setId(Id)
     if (Id.length) {
       instance.get('/profile', { params: { Id } })
-      .then(res => setAvatar(res.data.avatar))
-      .catch(err => console.log(err))
+      .then(res => {
+        setUsername(res.data.username)
+        setAvatar(res.data.avatar)
+      })
+      .catch(err => setStatus({ type: 'danger', msg: err.response.data.msg }))
     }
-    else setAvatar(null)
+    else {
+      setUsername('')
+      setAvatar(null)
+    }
   }
 
   const doLogin = async () => {
@@ -33,6 +40,7 @@ const useLogin = () => {
   return {
     id,
     password,
+    username,
     avatar,
     status,
     success,
