@@ -3,7 +3,7 @@ import { USER_QUERY, CONVS_QUERY, MSGS_QUERY, MSGS_IN_USER_CONVS_QUERY, MSGS_IN_
 import { CREATE_CONV_MUT, CREATE_MSG_MUT, UPDATE_MSG_MUT, DELETE_MSG_MUT } from '../graphql'
 import { CONV_SUB, MSG_SUB } from '../graphql'
 import { useQuery, useMutation } from '@apollo/client'
-import axios from 'axios'
+import instance from '../axios'
 
 const useChat = () => {
   const [tokenready, setTKready] = useState(false)
@@ -27,7 +27,6 @@ const useChat = () => {
   const [deleteMessage] = useMutation(DELETE_MSG_MUT)
 
   const client = new WebSocket('ws://localhost:4000')
-  const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
 
   const addUser = async UID => {
     if (uid.length && UID.length) {

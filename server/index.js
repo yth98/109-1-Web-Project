@@ -22,8 +22,11 @@ const app = express()
 const HTTPserver = http.createServer(app)
 const wss = new WebSocket.Server({ server: HTTPserver })
 
+const URL_BASE = process.env.URL_BASE || 'localhost'
+const PORT = process.env.PORT || 4000
+const PORT_GQL = process.env.PORT_GQL || 4200
 const buildPath = path.resolve(__dirname + '/../build')
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use(cors({ credentials: true, origin: process.env.URL_BASE || `http://${URL_BASE}:${PORT}` }))
 app.use(bodyParser.json())
 app.use(cookieParser('7463847412'))
 app.use(express.static(buildPath))
@@ -52,7 +55,6 @@ db.once('open', () => {
   console.log('MongoDB connected!')
 
   // RESTful API
-  const PORT = process.env.PORT || 4000
   HTTPserver.listen(PORT, () => {
     console.log(`Listening on http://localhost:${PORT}`)
   })
@@ -73,7 +75,6 @@ db.once('open', () => {
       pubsub,
     }
   })
-  const PORT_GQL = process.env.PORT_GQL || 4200
   GQLserver.start({port: PORT_GQL}, () => console.log(`GraphQL server is running on http://localhost:${PORT_GQL}`))
 
   // WebSocket

@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
-
-const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
+import instance from '../axios'
 
 const useLogin = () => {
   const [id, setId] = useState('')

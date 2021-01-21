@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import axios from 'axios'
-
-const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
+import instance from '../axios'
 
 const UserItem = props => {
   const { UID, isOnline, onClick, isConversataion } = props

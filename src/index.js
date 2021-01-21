@@ -9,8 +9,10 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import 'antd/dist/antd.css'
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4200/' })
-const wsLink = new WebSocketLink({ uri: 'ws://localhost:4200', options: {reconnect: true} })
+const URL_BASE = process.env.URL_BASE || 'localhost'
+const PORT_GQL = process.env.PORT_GQL || 4200
+const httpLink = new HttpLink({ uri: `http://${URL_BASE}:${PORT_GQL}/` })
+const wsLink = new WebSocketLink({ uri: `ws://${URL_BASE}:${PORT_GQL}/`, options: {reconnect: true} })
 const link = split(
   ({ query }) => {
     const definition = getMainDefinition(query)

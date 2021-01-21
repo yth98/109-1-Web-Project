@@ -38,6 +38,7 @@ Backend(NodeJS):
 * mongoose
 * mongodb
 * bcrypt
+* jsonwebtoken
 * express
 * cors
 * cookie-parser
@@ -53,5 +54,3 @@ Database(MongoDB):
 ## Contribution
 * Frontend:楊宗賢、林育世
 * Backend:楊宗賢
-
-
