@@ -168,7 +168,7 @@ ul::-webkit-scrollbar{
   border-top: 2px solid #fff;
 }
 #chat li{
-  padding: 10px 30px;
+  padding: 10px 15px;
 }
 #chat h2,#chat h3{
   display: inline-block;
@@ -191,6 +191,18 @@ ul::-webkit-scrollbar{
   padding: 15px;
   max-width: 90%;
 }
+#chat .message:hover + .delete{
+  display: inline;
+}
+.delete:hover{
+ color: orange;
+}
+.delete{
+  display: inline;
+}
+.delete:hover {
+  color:rgb(255, 94, 0);
+}
 #chat .me{
   text-align: right;
 }
@@ -199,6 +211,7 @@ ul::-webkit-scrollbar{
 }
 #chat .me .message{
   background-color: #6fbced;
+	margin-right: 5px;
 }
 #chat .triangle{
   width: 0;
@@ -214,7 +227,7 @@ ul::-webkit-scrollbar{
 #chat .me .triangle{
 	border-color: transparent transparent #6fbced transparent;
 	margin-left: auto;
-	margin-right: 15px;
+	margin-right: 35px;
 }
 
 #Chat-footer{

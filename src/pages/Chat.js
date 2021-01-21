@@ -65,6 +65,7 @@ function Chat() {
           Time={time.toLocaleDateString()+" "+time.toLocaleTimeString()}
           Message={msg.body}
           isI={msg.send === uid}
+          handleDelete={() => msg.send !== uid || deleteMessage({ variables: {id: msg._id} })}
         />
       case "IMAGE":
         return <></>
@@ -129,7 +130,7 @@ function Chat() {
           {
             talking ? <>
               <div className="left" style={{ width: 55, textAlign: "center" }}>
-                <img src={talking.photo} alt={talking.name} />
+                <img src={talking.photo} alt={talking.name} style={{borderradius: "100%"}} />
               </div>
               <div className="left" style={{ flexShrink: 0, width: "max-content" }}>
                 <h2>{talking.name}</h2>
