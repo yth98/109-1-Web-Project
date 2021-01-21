@@ -4,28 +4,22 @@
 * Share your feelings with emojis, photos, and featured stickers!
 
 ## Development
-* Prerequisite:
-<br><br/>
-Make sure the prerequisites are installed
-<br><br/>
+* Prerequisite: \
+  Make sure the prerequisites are installed \
 `yarn`
-* Client side:
-<br><br/>
-frontend side file is `src` which includes  `pages` ,`components` and `graphql`
-<br><br/>
-`yarn start`
-* Server side:
-<br><br/>
-Server side file is `server` which includes `models` ,`resolvers` ,`routes` and `schema.graphql`
-<br><br/>
-`yarn server`
-<br><br/>
+* Client side: \
+  frontend side file is `src` which includes  `pages` ,`components` and `graphql` \
+  `yarn start`
+* Server side: \
+  Server side file is `server` which includes `models` ,`resolvers` ,`routes` and `schema.graphql` \
+  `yarn server` \
 Remember replace the .env.defaults with .env file which includes your MONGODB_URL
-## Githublink
+## GitHub repository link
 * https://github.com/yth98/109-1-Web-Project
+## Deploy link
+* http://cdein.cc:4000/
 ## Environment & Packages
-Frontend(ReactJS): 
-<br><br/>
+Frontend(ReactJS):
 * rect
 * react-router-dom
 * @apollo/client
@@ -33,8 +27,7 @@ Frontend(ReactJS):
 * @ant-design/icons
 * axios
 
-Backend(NodeJS): 
-<br><br/>
+Backend(NodeJS):
 * mongoose
 * mongodb
 * bcrypt
@@ -48,9 +41,8 @@ Backend(NodeJS):
 * path
 
 Database(MongoDB): 
-<br><br/>
 * MongoDB
-<br><br/>
+
 ## Contribution
 * Frontend:楊宗賢、林育世
 * Backend:楊宗賢
