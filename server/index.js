@@ -15,10 +15,12 @@ const { User, Conv, Message } = require('./models')
 const { Query, Mutation, Subscription } = require('./resolvers')
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 
+const jwt = require('jsonwebtoken')
+
 // express
 const app = express()
-const server = http.createServer(app)
-const wss = new WebSocket.Server({ server })
+const HTTPserver = http.createServer(app)
+const wss = new WebSocket.Server({ server: HTTPserver })
 
 const buildPath = path.resolve(__dirname + '/../build')
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
@@ -51,32 +53,33 @@ db.once('open', () => {
 
   // RESTful API
   const PORT = process.env.PORT || 4000
-  app.listen(PORT, () => {
+  HTTPserver.listen(PORT, () => {
     console.log(`Listening on http://localhost:${PORT}`)
   })
 
   // GraphQL
   const pubsub = new PubSub()
-  const server = new GraphQLServer({
+  const GQLserver = new GraphQLServer({
     typeDefs: './server/schema.graphql',
     resolvers: {
       Query,
       Mutation,
-      Subscription
+      Subscription,
     },
     context: {
       User,
       Conv,
       Message,
-      pubsub
+      pubsub,
     }
   })
   const PORT_GQL = process.env.PORT_GQL || 4200
-  server.start({port: PORT_GQL}, () => console.log(`GraphQL server is running on localhost:${PORT_GQL}`))
+  GQLserver.start({port: PORT_GQL}, () => console.log(`GraphQL server is running on http://localhost:${PORT_GQL}`))
 
   // WebSocket
   wss.on('connection', ws => {
     let connectionInfo = null
+    ws.send(JSON.stringify([111,222]))
 
     const sendData = (data) => {
       ws.send(JSON.stringify(data))
@@ -86,7 +89,7 @@ db.once('open', () => {
       sendData(['status', s])
     }
 
-    ws.onmessage = (message) => {
+    ws.onmessage = async (message) => {
       const { data } = message
       console.log(data)
       const [task, payload] = JSON.parse(data)
@@ -94,8 +97,7 @@ db.once('open', () => {
       switch (task) {
         case 'auth' : {
           if (payload.credential === 'secret') {
-            connectionInfo = { user: payload.user_id, conv: payload.conv_id }
-            sendData(['authSuccess', { user: connectionInfo.user }])
+            sendData(['authSuccess', { uid: payload.user_id }])
             Message.find()
               .limit(100)
               .sort({ _id: 1 })

@@ -26,7 +26,7 @@ const useReg = () => {
       setSuccess(res.data.status)
       if (!res.data.status) setStatus({ type: 'danger', msg: res.data.msg })
     })
-    .catch(err => setStatus({ type: 'danger', msg: err.response.data.msg }))
+    .catch(err => setStatus({ type: 'danger', msg: err.response ? err.response.data.msg : err }))
   }
 
   return {

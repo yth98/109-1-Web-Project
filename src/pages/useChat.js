@@ -5,11 +5,12 @@ import { CONV_SUB, MSG_SUB } from '../graphql'
 import { useQuery, useMutation } from '@apollo/client'
 import axios from 'axios'
 
-const client = new WebSocket('ws://localhost:4000')
-
 const useChat = () => {
+  const [tokenready, setTKready] = useState(false)
+  // const [wsready, setWSReady] = useState(false)
+  const [logout, setLogout] = useState(false)
   const [status, setStatus] = useState({})
-  const [uid, setUID] = useState('alice')
+  const [uid, setUID] = useState('')
   const [uid2, setUID2] = useState('')
   const [conv, setConversation] = useState('')
   const [keyword, setKeyword] = useState('')
@@ -25,10 +26,12 @@ const useChat = () => {
   const [modifyMessage] = useMutation(UPDATE_MSG_MUT)
   const [deleteMessage] = useMutation(DELETE_MSG_MUT)
 
+  const client = new WebSocket('ws://localhost:4000')
   const instance = axios.create({ baseURL: 'http://localhost:4000/api' })
 
   const addUser = async UID => {
-    if (UID.length) {
+    if (uid.length && UID.length) {
+      console.log(uid, UID, uid.lenght && UID.length)
       instance.get('/profile', { params: { Id: UID } })
       .then(res => {
         if (res.data.user_id)
@@ -44,6 +47,7 @@ const useChat = () => {
 
   useEffect(() => Conversations.refetch(), [Conversations.refetch, uid])
   useEffect(() => {
+    if (!uid || !uid.length) return
     const unsubscribe = Conversations.subscribeToMore({
       document: CONV_SUB,
       variables: { uid },
@@ -83,7 +87,7 @@ const useChat = () => {
   },
   [Conversations.subscribeToMore, uid])
 
-  useEffect(() => {
+  useEffect(() => { 
     if (Conversations.loading || Conversations.error) return false
     const c = Conversations.data.conversations.find(c => c._id === conv)
     if (c) setUID2(uid === c.member_2 ? c.member_1 : c.member_2)
@@ -100,6 +104,7 @@ const useChat = () => {
   },
   [Messages.refetch, conv])
   useEffect(() => {
+    if (!uid || !uid.length) return
     const unsubscribe = Messages.subscribeToMore({
       document: MSG_SUB,
       variables: { uid },
@@ -158,6 +163,26 @@ const useChat = () => {
     setSearch(2)
   }
 
+/* 
+  // WebSocket
+  client.onopen = () => {
+    // console.log('onopen', wsready, client, client.readyState)
+    if (client.readyState !== 1) return
+    const data = [
+      'auth',
+      {
+        user_id: 'alice',
+        conv_id: '0',
+        credential: 'secret',
+      },
+    ]
+    client.send(JSON.stringify(data))
+    setWSReady(true)
+  }
+  client.onclose = () => {
+    // console.log('onclose', wsready, client, client.readyState)
+    if (client.readyState !== 1) setWSReady(false)
+  }
   client.onmessage = (message) => {
     const { data } = message
     const [task, payload] = JSON.parse(data)
@@ -171,8 +196,60 @@ const useChat = () => {
         break
     }
   }
+  useEffect(() => {
+    const data = [
+      'auth',
+      {
+        user_id: 'alice',
+        conv_id: '0',
+        credential: 'secret',
+      },
+    ]
+    // console.log('oneffect', wsready, client, client.readyState, JSON.stringify({data}))
+    if (!wsready || client.readyState !== 1) return
+    client.send(JSON.stringify({ data }))
+    .then(res => {
+      console.log('websocket auth', uid)
+      // setUID('alice')
+    })
+  },
+  [wsready])
+ */
+
+  // Login authorization
+  useEffect(() => {
+    if (tokenready) return
+    instance.get('/auth', { withCredentials: true })
+    .then(res => {
+      console.log('auth', res.data, res.data.uid)
+      if (!res.data.uid) {
+        setStatus({ type: 'danger', msg: res.data.msg })
+        setLogout(true)
+      } else {
+        setTKready(true)
+        setUID(res.data.uid)
+        Conversations.refetch()
+      }
+    })
+    .catch(err => {
+      setStatus({ type: 'danger', msg: err })
+      setLogout(true)
+    })
+  },
+  [instance, uid, tokenready, Conversations])
+
+  // Logout
+  const doLogout = () => {
+    instance.post('/logout', { withCredentials: true })
+    .then(res => setStatus({ type: 'success', msg: '成功登出！' }))
+    .catch(err => {})
+    setLogout(true)
+  }
 
   return {
+    tokenready,
+    client,
+    logout,
     uid,
     status,
     talking: !TalkingToUser.data || TalkingToUser.data.user,
@@ -190,7 +267,7 @@ const useChat = () => {
     ),
     search,
     keyword,
-    setUID,
+    doLogout,
     addUser,
     setConversation,
     sendMessage,

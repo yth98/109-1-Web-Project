@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import { Redirect } from 'react-router-dom'
 import useChat from "./useChat"
 import { Upload, Layout, Button, Input, message, Menu, Tooltip } from "antd"
 import UserItem from "../components/Useritem"
@@ -14,6 +15,9 @@ import {
 
 function Chat() {
   const {
+    tokenready,
+    client,
+    logout,
     uid,
     status,
     talking,
@@ -23,7 +27,7 @@ function Chat() {
     messages,
     search,
     keyword,
-    setUID,
+    doLogout,
     addUser,
     setConversation,
     sendMessage,
@@ -113,10 +117,11 @@ function Chat() {
 
   return (
     <Layout style={{ height: "100vh" }}>
+      {logout ? <Redirect to={'/'} /> : <></>}
       {/* <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} > */}
       <Sider>
         <ul id="conv">
-          <UserItem UID={uid} />
+          <UserItem UID={uid} onClick={doLogout} />
           <AddUserItem onSearch={addUser} />
           {
             conversations_ready

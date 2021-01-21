@@ -19,7 +19,7 @@ const useLogin = () => {
         setUsername(res.data.username)
         setAvatar(res.data.avatar)
       })
-      .catch(err => setStatus({ type: 'danger', msg: err.response.data.msg }))
+      .catch(err => setStatus({ type: 'danger', msg: err.response ? err.response.data.msg : err }))
     }
     else {
       setUsername('')
@@ -34,7 +34,7 @@ const useLogin = () => {
       setSuccess(res.data.status)
       if (!res.data.status) setStatus({ type: 'danger', msg: res.data.msg })
     })
-    .catch(err => setStatus({ type: 'danger', msg: err.response.data.msg }))
+    .catch(err => setStatus({ type: 'danger', msg: err.response ? err.response.data.msg : err }))
   }
 
   return {

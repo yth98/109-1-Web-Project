@@ -13,13 +13,13 @@ const UserItem = props => {
   let [Message, setMessage] = useState('I\'m keeping going until dead line coming')
 
   useEffect(() => {
+    if (!UID || !UID.length) return
     instance.get('/profile', { params: { Id: UID } })
     .then(res => {
       if (res.data.user_id) {
         setName(res.data.username)
         setPicture(res.data.avatar)
         setMessage('going until deadline')
-        console.log(res.data)
       }
     })
     .catch(err => console.log(err))
