@@ -25,13 +25,30 @@ Remember replace the .env.defaults with .env file which includes your MONGODB_UR
 * https://github.com/yth98/109-1-Web-Project
 ## Environment & Packages
 Frontend(ReactJS): 
-*
 <br><br/>
-Backend: NodeJS
-*
+* rect
+* react-router-dom
+* @apollo/client
+* antd
+* @ant-design/icons
+* axios
 <br><br/>
-Database: MongoDB
-*
-
+Backend(NodeJS): 
+<br><br/>
+* mongoose
+* mongodb
+* bcrypt
+* express
+* cors
+* cookie-parser
+* ws
+* graphql-yoga
+* http
+* path
+<br><br/>
+Database(MongoDB): 
+<br><br/>
+* MongoDB
+<br><br/>
 
 
