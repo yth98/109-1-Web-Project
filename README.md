@@ -50,5 +50,8 @@ Database(MongoDB):
 <br><br/>
 * MongoDB
 <br><br/>
+## Contribution
+Frontend:楊宗賢、林育世
+Backend:楊宗賢
 
 
