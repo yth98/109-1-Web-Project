@@ -22,6 +22,7 @@ function Chat() {
     messages,
     search,
     setUID,
+    setID,
     setConversation,
     sendMessage,
     modifyMessage,
@@ -53,6 +54,7 @@ function Chat() {
 
   const messageItems = msg => {
     const time = new Date(msg.time)
+    const id = msg._id
     switch (msg.type) {
       case "TEXT":
       default:
@@ -62,6 +64,8 @@ function Chat() {
           Time={time.toLocaleDateString()+" "+time.toLocaleTimeString()}
           Message={msg.body}
           isI={msg.send === uid}
+          handleDelete = {()=>deleteMessage(msg._id)}
+          // handleDelete = {()=>setID(msg._id)}
         />
       case "IMAGE":
         return <></>
@@ -126,7 +130,7 @@ function Chat() {
           {
             talking ? <>
               <div className="left">
-                <img src={talking.photo} alt={talking.name} style={{borderradius: "50%"}} />
+                <img src={talking.photo} alt={talking.name} style={{borderradius: "100%"}} />
               </div>
               <div className="left">
                 <h2 style={{color:"#bbb"}}>{talking.name}</h2>

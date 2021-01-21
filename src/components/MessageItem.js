@@ -1,9 +1,11 @@
 import React from 'react'
+import {EditOutlined ,DeleteOutlined} from "@ant-design/icons"
 
 const MessageItem = props => {
-  const { Sendername, Time, Message, isI } = props
+  const { Sendername, Time, Message, isI ,handleDelete} = props
   return (
     <li className={isI ? "me" : "you"}>
+      
       {isI
         ?
         <div className="entete">
@@ -18,10 +20,14 @@ const MessageItem = props => {
           <h3>{Time}</h3>
         </div>
       }
+      
+
       <div className="triangle"></div>
       <div className="message">
         {Message}
+        
       </div>
+      <DeleteOutlined id="delete" onClick={handleDelete}/>
     </li>
   )
 }

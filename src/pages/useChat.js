@@ -13,6 +13,7 @@ const useChat = () => {
   const [conv, setConversation] = useState('')
   const [keyword, setKeyword] = useState('')
   const [search, setSearch] = useState(0)
+  const [id, setID]=useState('') 
 
   const Conversations = useQuery(CONVS_QUERY, {variables: { uid }})
   const TalkingToUser = useQuery(USER_QUERY, {variables: { uid: uid2 }})
@@ -21,7 +22,7 @@ const useChat = () => {
   const MessagesInConv = useQuery(MSGS_IN_CONV_QUERY, {variables: { conv, keyword }})
   const [createMessage] = useMutation(CREATE_MSG_MUT)
   const [modifyMessage] = useMutation(UPDATE_MSG_MUT)
-  const [deleteMessage] = useMutation(DELETE_MSG_MUT)
+  const [deleteMessage] = useMutation(DELETE_MSG_MUT, {variables:{ id }})
 
   // useEffect(() => Conversations.refetch(), [Conversations, Conversations.refetch, uid])
   useEffect(() => {
