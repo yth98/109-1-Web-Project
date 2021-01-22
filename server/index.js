@@ -28,7 +28,12 @@ const PORT_SERVER = process.env.PORT_SERVER || 4000
 const PORT_GQL = process.env.PORT_GQL || 4200
 const buildPath = path.resolve(__dirname + '/../build')
 console.log(`Allow CORS from http://${URL_BASE}:${PORT}`)
-app.use(cors({ credentials: true, origin: `http://${URL_BASE}:${PORT}` }))
+app.use(cors({ credentials: true, origin: (origin, callback) => {
+  if ([`http://${URL_BASE}:${PORT}`, `http://ichat.${URL_BASE}`].indexOf(origin) !== -1)
+    callback(null, true)
+  else
+    callback(null, false)
+} }))
 app.use(bodyParser.json())
 app.use(cookieParser('7463847412'))
 app.use(express.static(buildPath))

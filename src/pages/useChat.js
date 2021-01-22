@@ -51,7 +51,7 @@ const useChat = () => {
       document: CONV_SUB,
       variables: { uid },
       updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
+        if (!subscriptionData.data || subscriptionData.data.conversation.payload.conv !== conv) return prev
         switch (subscriptionData.data.conversation.mutation) {
           case 'CREATED':
             return {

@@ -3,7 +3,7 @@ const Query = {
     return await User.findOne({uid: args.uid})
   },
   async conversations(parent, args, { Conv }, info) {
-    return await Conv.find({$or: [{member_1: args.uid}, {member_2: args.uid}]})
+    return await Conv.find({$or: [{member_1: args.uid}, {member_2: args.uid}]}).sort({recent: -1}).exec()
   },
   async messages(parent, args, { Conv, Message }, info) {
     return await Message.find(args)

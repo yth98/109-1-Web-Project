@@ -80,6 +80,7 @@ router.get('/auth', async (req, res) => {
 
 router.get('/profile', async (req, res) => {
   console.log('API profile', req.query.Id, !!req.signedCookies.cred)
+  res.set({ 'Cache-Control': 'private, no-cache, no-store, must-revalidate', });
   if (req.query.Id) {
     let username = '(沒有這個帳號！)', avatar = 'https://i.imgur.com/YENBp8x.jpg', lastmsg
     const user = await models.User.findOne({uid: req.query.Id})

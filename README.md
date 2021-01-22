@@ -13,14 +13,14 @@
 * Server side: \
   Server side file is `server` which includes `models` ,`resolvers` ,`routes` and `schema.graphql` \
   `yarn server` \
-Remember replace the .env.defaults with .env file which includes your MONGODB_URL
+Remember to replace `.env.defaults` with `.env` file which includes your `MONGO_URL`
 ## GitHub repository link
 * https://github.com/yth98/109-1-Web-Project
 ## Deploy link
-* http://cdein.cc:4000/
+* http://ichat.cdein.cc/ or http://cdein.cc:4000/
 ## Environment & Packages
 Frontend(ReactJS):
-* rect
+* react
 * react-router-dom
 * @apollo/client
 * antd
@@ -40,7 +40,7 @@ Backend(NodeJS):
 * http
 * path
 
-Database(MongoDB): 
+Database(MongoDB):
 * MongoDB
 
 ## Contribution

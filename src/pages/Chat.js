@@ -67,7 +67,7 @@ function Chat() {
   const userItems = conv => {
     const other = conv.member_2 === uid ? conv.member_1 : conv.member_2
     return <UserItem
-      key={other}
+      key={other + '@' + new Date(conv.recent).toISOString()}
       UID={other}
       isConversataion
       onClick={() => setConversation(conv._id)}
