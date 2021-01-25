@@ -46,7 +46,10 @@ function Chat() {
       UID={other}
       isConversataion
       recent={conv.recent}
-      onClick={() => setConversation(conv._id)}
+      onClick={e => {
+        e.stopPropagation()
+        setConversation(conv._id)
+      }}
     />
   }
 
@@ -113,7 +116,7 @@ function Chat() {
       {logout ? <Redirect to={'/'} /> : <></>}
       {/* <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} > */}
       <Sider>
-        <ul id="conv">
+        <ul id="conv" onClick={() => setConversation('')}>
           <UserItem UID={uid} onClick={doLogout} />
           <AddUserItem onSearch={addUser} />
           {
@@ -157,7 +160,7 @@ function Chat() {
         <Content style={{ margin: "90 20 90 30" }}>
           <ul id="chat">
           {
-            messages_ready
+            talking && messages_ready
             ? messages.length
               ? messages.map(msg => messageItems(msg))
               : <div style={{ textAlign: "center", padding: "30vh 0" }}>{
@@ -171,7 +174,7 @@ function Chat() {
         </Content>
         <Footer id="Chat-footer">
           <div>
-            <StickerItem appendEmoji={appendEmoji} />
+            <StickerItem appendEmoji={appendEmoji} disabled={!talking} />
           </div>
           <div style={{ flex: "auto" }}>
             <Input
@@ -183,7 +186,7 @@ function Chat() {
             />
           </div>
           <div>
-            <Button type="primary" icon={<SendOutlined />} onClick={sendText}>
+            <Button type="primary" icon={<SendOutlined />} disabled={!talking} onClick={sendText}>
               Send
             </Button>
           </div>

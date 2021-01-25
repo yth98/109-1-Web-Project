@@ -1,22 +1,34 @@
-import React from 'react'
-import { HeartOutlined }from "@ant-design/icons"
-import { Button } from "antd"
+import React, { useState } from 'react'
+import { HeartOutlined } from '@ant-design/icons'
+import { Menu, Dropdown, Button } from 'antd'
 
 const StickerItem = props => {
-  const { HandleEmojih, HandleEmojia, HandleEmojis, HandleEmojic, HandleEmojil } = props
+  const { appendEmoji, disabled } = props
+  const [visible, setVisible] = useState(false)
+  const emojis = [
+    { e: '😆', t: 'happy', },
+    { e: '🤬', t: 'angry', },
+    { e: '😖', t: 'scared', },
+    { e: '😭', t: 'cry', },
+    { e: '💕', t: 'love', },
+  ]
+  const menu = (
+    <Menu className="dropup">{
+      emojis.map(emoji => <Menu.Item key={emoji.e} onClick={() => appendEmoji(emoji.e)}>{emoji.e} {emoji.t}</Menu.Item>)
+    }</Menu>
+  )
   return (
-    <div class="dropup"> 
+    <Dropdown
+      disabled={disabled}
+      overlay={menu}
+      placement="topCenter"
+      visible={visible}
+      onVisibleChange={flag => setVisible(flag)}
+    >
       <Button className="dropbtn" type="primary" icon={<HeartOutlined />}>
         emoji
       </Button>
-      <div class="dropup-content"> 
-          <a onClick={HandleEmojih}> 😆happy</a>
-          <a onClick={HandleEmojia}> 🤬angury</a>
-          <a onClick={HandleEmojis}> 😖scared</a>
-          <a onClick={HandleEmojic}> 😭cry</a>
-          <a onClick={HandleEmojil}> 💕love</a>
-      </div>
-    </div>
+    </Dropdown>
   )
 }
 

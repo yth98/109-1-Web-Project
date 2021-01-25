@@ -10,7 +10,7 @@ const formidable = require('formidable')
 const sharp = require('sharp')
 
 const cookieOptions = {
-  maxAge: 604800,
+  maxAge: 86400000,
   signed: true,
   httpOnly: true,
 }
@@ -59,7 +59,7 @@ router.post('/register', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  console.log('API login', req.body)
+  console.log('API login', req.body.id)
   if (req.body.id && req.body.id.length && req.body.password && req.body.password.length) {
     const user = await models.User.findOne({uid: req.body.id})
     if (!user || !await bcrypt.compare(req.body.password, user.password_hash))

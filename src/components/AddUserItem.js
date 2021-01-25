@@ -10,6 +10,7 @@ const AddUserItem = props => {
         <Input.Search
           value={id}
           placeholder="Find users..."
+          onClick={e => e.stopPropagation()}
           onChange={e => changeId(e.target.value)}
           onSearch={() => onSearch(id)}
         />

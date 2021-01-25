@@ -22,21 +22,25 @@ Remember to replace `.env.defaults` with `.env` file which includes your `MONGO_
 Frontend(ReactJS):
 * react
 * react-router-dom
-* @apollo/client
 * antd
 * @ant-design/icons
+* @apollo/client
 * axios
 
 Backend(NodeJS):
-* mongoose
-* mongodb
-* bcrypt
-* jsonwebtoken
 * express
 * cors
+* body-parser
 * cookie-parser
-* ws
+* mongoose
+* mongodb
 * graphql-yoga
+* bcrypt
+* jsonwebtoken
+* formidable
+* sharp
+* fs
+* ws
 * http
 * path
 

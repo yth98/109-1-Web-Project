@@ -94,7 +94,7 @@ const useChat = () => {
   useEffect(() => {
     if (Conversations.loading || Conversations.error) return false
     const c = Conversations.data.conversations.find(c => c._id === conv)
-    if (c) setUID2(uid === c.member_2 ? c.member_1 : c.member_2)
+    setUID2(c ? (uid === c.member_2 ? c.member_1 : c.member_2) : '')
   },
   [Conversations, uid, conv])
   useEffect(() => {
@@ -225,7 +225,7 @@ const useChat = () => {
     if (tokenready) return
     instance.get('/auth', { withCredentials: true })
     .then(res => {
-      console.log('auth', res.data, res.data.uid)
+      console.log('auth', res.data)
       if (!res.data.uid) {
         setStatus({ type: 'danger', msg: res.data.msg })
         setLogout(true)
@@ -243,7 +243,8 @@ const useChat = () => {
   [uid, tokenready, Conversations])
 
   // Logout
-  const doLogout = () => {
+  const doLogout = e => {
+    e.stopPropagation()
     instance.post('/logout', { withCredentials: true })
     .then(res => setStatus({ type: 'success', msg: '成功登出！' }))
     .catch(err => {})
@@ -256,18 +257,18 @@ const useChat = () => {
     logout,
     uid,
     status,
-    talking: !TalkingToUser.data || TalkingToUser.data.user,
+    talking: !!uid2.length && !!TalkingToUser.data && TalkingToUser.data.user,
     conversations_ready: !Conversations.loading && !Conversations.error,
-    conversations: !Conversations.data || Conversations.data.conversations,
+    conversations: !!Conversations.data && Conversations.data.conversations,
     messages_ready: (
       search === 2 ? !MessagesInConv.loading && !MessagesInConv.error :
       search === 1 ? !MessagesInUser.loading && !MessagesInUser.error :
       !Messages.loading && !Messages.error
     ),
     messages: (
-      search === 2 ? !MessagesInConv.data || MessagesInConv.data.messagesConv :
-      search === 1 ? !MessagesInUser.data || MessagesInUser.data.messagesUser :
-      !Messages.data || Messages.data.messages
+      search === 2 ? !!MessagesInConv.data && MessagesInConv.data.messagesConv :
+      search === 1 ? !!MessagesInUser.data && MessagesInUser.data.messagesUser :
+      !!Messages.data && Messages.data.messages
     ),
     search,
     keyword,

@@ -246,6 +246,26 @@ ul{
   margin-left: 8px;
 }
 
+.dropbtn {
+  background: #3498db;
+  font-size: 16px;
+  border: none;
+}
+.dropbtn:hover {
+  background: #2980b9;
+}
+.dropup {
+  background: #f1f1f1;
+  padding: 0;
+}
+.dropup li {
+  color: #000;
+  padding: 10px 12px;
+}
+.dropup li:hover {
+  background-color: #ccc;
+}
+
 #components-form-demo-control-hooks .ant-btn {
   margin-right: 8px;
 }
@@ -265,84 +285,4 @@ ul{
   display: inline-block; /*讓div並排*/
   border-radius: 3px;
   margin: 20px;
-}
-
-.dropbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.dropdown:hover .dropbtn {
-  background-color: #3e8e41;
-}
-.dropbtn {
-  background-color: #3498DB;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-}
-
-.dropup {
-  position: relative;
-  display: inline-block;
-}
-
-.dropup-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 20px;
-  bottom: 32px;
-  z-index: 1;
-}
-
-.dropup-content a {
-  color: black;
-  padding: 10px 12px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropup-content a:hover {background-color: #ccc}
-
-.dropup:hover .dropup-content {
-  display: block;
-}
-
-.dropup:hover .dropbtn {
-  background-color: #2980B9;
 }

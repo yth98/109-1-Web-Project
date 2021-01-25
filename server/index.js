@@ -15,8 +15,6 @@ const { User, Conv, Message } = require('./models')
 const { Query, Mutation, Subscription } = require('./resolvers')
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 
-const jwt = require('jsonwebtoken')
-
 // express
 const app = express()
 const HTTPserver = http.createServer(app)
@@ -26,7 +24,9 @@ const URL_BASE = process.env.URL_BASE || 'localhost'
 const PORT = process.env.PORT || 3000
 const PORT_SERVER = process.env.PORT_SERVER || 4000
 const PORT_GQL = process.env.PORT_GQL || 4200
+const COOKIE_SIGN_SECRET = process.env.COOKIE_SIGN_SECRET || '7463847412'
 const buildPath = path.resolve(__dirname + '/../build')
+
 console.log(`Allow CORS from http://${URL_BASE}:${PORT}`)
 app.use(cors({ credentials: true, origin: (origin, callback) => {
   if ([`http://${URL_BASE}:${PORT}`, `http://ichat.${URL_BASE}`].indexOf(origin) !== -1)
@@ -35,7 +35,7 @@ app.use(cors({ credentials: true, origin: (origin, callback) => {
     callback(null, false)
 } }))
 app.use(bodyParser.json())
-app.use(cookieParser('7463847412'))
+app.use(cookieParser(COOKIE_SIGN_SECRET))
 app.use(express.static(buildPath))
 app.use('/api', ApiRoute)
 app.get('/*', (req, res) => res.sendFile(buildPath + '/index.html'))

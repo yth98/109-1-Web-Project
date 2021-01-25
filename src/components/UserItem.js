@@ -6,9 +6,9 @@ const UserItem = props => {
   const { UID, isOnline, isConversataion, recent, onClick } = props
   let StatusColor = (isOnline === true) ? "status green" : "status orange"
   let Status = (isOnline === true) ? "online" : "offline"
-  let [PictureURL, setPicture] = useState('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg')
+  let [PictureURL, setPicture] = useState('/favicon.ico')
   let [Name, setName] = useState('')
-  let [Message, setMessage] = useState('I\'m keeping going until dead line coming')
+  let [Message, setMessage] = useState('')
 
   useEffect(() => {
     if (!UID || !UID.length) return
@@ -40,16 +40,10 @@ const UserItem = props => {
 }
 
 UserItem.propTypes = {
-  PictureURL: PropTypes.string,
-  Name: PropTypes.string,
   isOnline: PropTypes.bool.isRequired,
-  LatestMessage: PropTypes.string,
 }
 UserItem.defaultProps = {
-  PictureURL: "",
-  Name: "",
   isOnline: false,
-  LatestMessage: "",
 }
 
 export default UserItem
