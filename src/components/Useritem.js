@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import instance from '../axios'
 
 const UserItem = props => {
-  const { UID, isOnline, onClick, isConversataion } = props
+  const { UID, isOnline, isConversataion, recent, onClick } = props
   let StatusColor = (isOnline === true) ? "status green" : "status orange"
   let Status = (isOnline === true) ? "online" : "offline"
   let [PictureURL, setPicture] = useState('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg')
@@ -22,7 +22,7 @@ const UserItem = props => {
     })
     .catch(err => console.log(err))
   },
-  [UID])
+  [UID, recent])
 
   return (
     <li key={UID} className={isConversataion?"conv-item":undefined} onClick={onClick}>
@@ -42,14 +42,14 @@ const UserItem = props => {
 UserItem.propTypes = {
   PictureURL: PropTypes.string,
   Name: PropTypes.string,
-  isOnline:PropTypes.bool.isRequired,
-  LatestMessage:PropTypes.string,
+  isOnline: PropTypes.bool.isRequired,
+  LatestMessage: PropTypes.string,
 }
 UserItem.defaultProps = {
-  PictureURL: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg",
-  Name: "Prénom Nom",
+  PictureURL: "",
+  Name: "",
   isOnline: false,
-  LatestMessage: "I'm keeping going until dead line coming",
+  LatestMessage: "",
 }
 
 export default UserItem

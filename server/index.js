@@ -80,9 +80,12 @@ db.once('open', () => {
       Conv,
       Message,
       pubsub,
-    }
+    },
   })
-  GQLserver.start({port: PORT_GQL}, () => console.log(`GraphQL server is running on http://localhost:${PORT_GQL}`))
+  GQLserver.start({
+    port: PORT_GQL,
+    playground: false,
+  }, () => console.log(`GraphQL server is running on http://localhost:${PORT_GQL}`))
 
   // WebSocket
   wss.on('connection', ws => {

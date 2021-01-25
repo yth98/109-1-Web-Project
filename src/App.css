@@ -31,6 +31,9 @@
   margin: auto;
 }
 
+.Registration-avatar {
+  margin: 20px 0 30px 0;
+}
 .Registration-btn {
   display: inline-block !important;
   margin: '0 8px';

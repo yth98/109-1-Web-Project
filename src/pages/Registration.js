@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import useReg from './useRegistration'
-import { Form, Button, Input, message, Upload } from 'antd'
+import { Form, Button, Input, message } from 'antd'
 import UploadHead from '../components/UploadHead'
 
 function Registration() {
-  const { id, password, username, avatar, status, success, setId, setPassword, setUsername, setAvatar, checkId, doReg } = useReg()
+  const { id, password, username, status, success, setId, setPassword, setUsername, setAvatar, checkId, doReg } = useReg()
   const layout = {
     labelCol: {
       span: 8,
@@ -54,8 +54,7 @@ function Registration() {
         <p>愛聊生活，就從今天開始</p>
       </div>
       <div className="Registration-avatar">
-        <img alt="" src={avatar} />
-        <UploadHead />
+        <UploadHead setAvatar={setAvatar} />
       </div>
       <Form onFinish={doReg} {...layout}>
         <Form.Item

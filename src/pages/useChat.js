@@ -21,6 +21,11 @@ const useChat = () => {
   const Messages = useQuery(MSGS_QUERY, {variables: { conv }})
   const MessagesInUser = useQuery(MSGS_IN_USER_CONVS_QUERY, {variables: { uid, keyword }})
   const MessagesInConv = useQuery(MSGS_IN_CONV_QUERY, {variables: { conv, keyword }})
+  const { refetch: ConvRef, subscribeToMore: ConvSub } = Conversations
+  const { refetch: TalkRef } = TalkingToUser
+  const { refetch: MsgRef, subscribeToMore: MsgSub } = Messages
+  const { refetch: MsgUserRef } = MessagesInUser
+  const { refetch: MsgConvRef } = MessagesInConv
   const [createConversation] = useMutation(CREATE_CONV_MUT)
   const [createMessage] = useMutation(CREATE_MSG_MUT)
   const [modifyMessage] = useMutation(UPDATE_MSG_MUT)
@@ -30,7 +35,7 @@ const useChat = () => {
 
   const addUser = async UID => {
     if (uid.length && UID.length) {
-      console.log(uid, UID, uid.lenght && UID.length)
+      console.log('add', uid, UID)
       instance.get('/profile', { params: { Id: UID } })
       .then(res => {
         if (res.data.user_id)
@@ -44,14 +49,14 @@ const useChat = () => {
     }
   }
 
-  useEffect(() => Conversations.refetch(), [Conversations.refetch, uid])
+  useEffect(() => ConvRef(), [ConvRef, uid])
   useEffect(() => {
-    if (!uid || !uid.length) return
-    const unsubscribe = Conversations.subscribeToMore({
+    if (!ConvSub || !uid || !uid.length) return
+    const unsubscribe = ConvSub({
       document: CONV_SUB,
       variables: { uid },
       updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data || subscriptionData.data.conversation.payload.conv !== conv) return prev
+        if (!subscriptionData.data) return prev
         switch (subscriptionData.data.conversation.mutation) {
           case 'CREATED':
             return {
@@ -84,7 +89,7 @@ const useChat = () => {
     })
     return () => unsubscribe()
   },
-  [Conversations.subscribeToMore, uid])
+  [ConvSub, uid, conv])
 
   useEffect(() => { 
     if (Conversations.loading || Conversations.error) return false
@@ -93,22 +98,22 @@ const useChat = () => {
   },
   [Conversations, uid, conv])
   useEffect(() => {
-    if (uid2.length) TalkingToUser.refetch()
+    if (TalkRef && uid2.length) TalkRef()
   },
-  [TalkingToUser.refetch, uid2])
+  [TalkRef, uid2])
 
   useEffect(() => {
-    if (conv && conv.length) Messages.refetch()
+    if (MsgRef && conv && conv.length) MsgRef()
     setSearch(0)
   },
-  [Messages.refetch, conv])
+  [MsgRef, conv])
   useEffect(() => {
-    if (!uid || !uid.length) return
-    const unsubscribe = Messages.subscribeToMore({
+    if (!MsgSub || !conv || !conv.length) return
+    const unsubscribe = MsgSub({
       document: MSG_SUB,
       variables: { uid },
       updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev
+        if (!subscriptionData.data || subscriptionData.data.message.payload.conv !== conv) return prev
         switch (subscriptionData.data.message.mutation) {
           case 'CREATED':
             return {
@@ -137,13 +142,13 @@ const useChat = () => {
     })
     return () => unsubscribe()
   },
-  [Messages.subscribeToMore, uid, conv])
+  [MsgSub, uid, conv])
 
   useEffect(() => {
-    if (search === 1) MessagesInUser.refetch()
-    if (search === 2) MessagesInConv.refetch()
+    if (MsgUserRef && search === 1) MsgUserRef()
+    if (MsgConvRef && search === 2) MsgConvRef()
   },
-  [keyword, search])
+  [MsgUserRef, MsgConvRef, keyword, search])
 
   const sendMessage = (type, body) => {
     if (uid.length && conv.length && body.length)

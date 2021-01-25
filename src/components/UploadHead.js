@@ -2,6 +2,8 @@ import React from 'react'
 import { Upload, message } from 'antd'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 
+import instance from '../axios'
+
 function getBase64(img, callback) {
   const reader = new FileReader()
   reader.addEventListener('load', () => callback(reader.result))
@@ -9,15 +11,15 @@ function getBase64(img, callback) {
 }
 
 function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!')
+  const isAllowedType = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].indexOf(file.type) !== -1
+  if (!isAllowedType) {
+    message.error('You can only upload JPG/PNG/WEBP/TIFF file!')
   }
-  const isLt2M = file.size / 1024 / 1024 < 2
-  if (!isLt2M) {
-    message.error('Image must smaller than 2MB!')
+  const isLtEq2M = file.size <= 2 * 1024 * 1024
+  if (!isLtEq2M) {
+    message.error('Image size must be no more than 2MB!')
   }
-  return isJpgOrPng && isLt2M
+  return isAllowedType && isLtEq2M
 }
 
 export default class UploadHead extends React.Component {
@@ -26,18 +28,20 @@ export default class UploadHead extends React.Component {
   }
 
   handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true })
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      )
+    switch (info.file.status) {
+      case 'uploading':
+        this.setState({ loading: true })
+        return
+      case 'done':
+        if (info.file.response.success)
+          this.props.setAvatar(info.file.response.token)
+        getBase64(info.file.originFileObj, imageUrl =>
+          this.setState({ imageUrl, loading: false, })
+        )
+        return
+      case 'error':
+      default:
+        this.setState({ imageUrl: null, loading: false, })
     }
   }
 
@@ -55,13 +59,12 @@ export default class UploadHead extends React.Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        action={`${instance.defaults.baseURL}/avatar`}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
-        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ maxWidth: '100%', maxHeight: '100%' }} /> : uploadButton}
       </Upload>
     )
   }
 }
-

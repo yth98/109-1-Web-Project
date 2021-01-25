@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Redirect } from 'react-router-dom'
 import useChat from "./useChat"
-import { Upload, Layout, Button, Input, message, Menu, Tooltip } from "antd"
+import { Upload, Layout, Button, Input, message, Tooltip } from "antd"
 import UserItem from "../components/Useritem"
 import AddUserItem from "../components/AddUseritem"
 import MessageItem from "../components/MessageItem"
 import StickerItem from "../components/Stickeritem"
 import {
-  HeartOutlined,
   SendOutlined,
   UploadOutlined,
   CloseOutlined,
@@ -39,16 +38,9 @@ function Chat() {
     searchInConv,
   } = useChat()
 
-  
-
   const { Header, Footer, Sider, Content } = Layout
-  const { SubMenu } = Menu
-  const [body, setBody] = useState("")
-  const [collapsed, setCollapsed] = useState(false)
-  const [adduser, setAdduser] = useState("")
   const [word, setWord] = useState("")
   const [msg, setMsg] = useState("")
-  const bodyRef = useRef(null)
   const HandleEmojih = ()=>{
     setMsg("😆")
   }
@@ -67,9 +59,10 @@ function Chat() {
   const userItems = conv => {
     const other = conv.member_2 === uid ? conv.member_1 : conv.member_2
     return <UserItem
-      key={other + '@' + new Date(conv.recent).toISOString()}
+      key={other}
       UID={other}
       isConversataion
+      recent={conv.recent}
       onClick={() => setConversation(conv._id)}
     />
   }
@@ -103,12 +96,10 @@ function Chat() {
   }
 
   const normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  };
+    console.log('Upload event:', e)
+    if (Array.isArray(e)) return e
+    return e && e.fileList
+  }
 
   useEffect(() => {
     if (status.msg) {

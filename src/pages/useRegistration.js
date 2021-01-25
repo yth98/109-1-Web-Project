@@ -31,7 +31,6 @@ const useReg = () => {
     id,
     password,
     username,
-    avatar,
     status,
     success,
     setId,
