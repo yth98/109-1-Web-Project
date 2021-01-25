@@ -91,7 +91,7 @@ const useChat = () => {
   },
   [ConvSub, uid, conv])
 
-  useEffect(() => { 
+  useEffect(() => {
     if (Conversations.loading || Conversations.error) return false
     const c = Conversations.data.conversations.find(c => c._id === conv)
     if (c) setUID2(uid === c.member_2 ? c.member_1 : c.member_2)

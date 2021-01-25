@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import useChat from "./useChat"
-import { Upload, Layout, Button, Input, message, Tooltip } from "antd"
-import UserItem from "../components/Useritem"
-import AddUserItem from "../components/AddUseritem"
-import MessageItem from "../components/MessageItem"
-import StickerItem from "../components/Stickeritem"
+import useChat from './useChat'
+import { Upload, Layout, Button, Input, message, Tooltip } from 'antd'
+import { UserItem, AddUserItem, MessageItem, StickerItem } from '../components'
 import {
   SendOutlined,
   UploadOutlined,
   CloseOutlined,
   SearchOutlined,
-} from "@ant-design/icons"
+} from '@ant-design/icons'
 
 function Chat() {
   const {
@@ -41,21 +38,7 @@ function Chat() {
   const { Header, Footer, Sider, Content } = Layout
   const [word, setWord] = useState("")
   const [msg, setMsg] = useState("")
-  const HandleEmojih = ()=>{
-    setMsg("😆")
-  }
-  const HandleEmojia = ()=>{
-    setMsg("🤬")
-  }
-  const HandleEmojis = ()=>{
-    setMsg("😖")
-  }
-  const HandleEmojic = ()=>{
-    setMsg("😭")
-  }
-  const HandleEmojil = ()=>{
-    setMsg("💕")
-  }
+
   const userItems = conv => {
     const other = conv.member_2 === uid ? conv.member_1 : conv.member_2
     return <UserItem
@@ -89,8 +72,11 @@ function Chat() {
     }
   }
 
+  const appendEmoji = emoji => {
+    if (talking) setMsg(msg + emoji)
+  }
   const sendText = () => {
-    if (!msg.length) return
+    if (!talking || !msg.length) return
     sendMessage("TEXT", msg)
     setMsg("")
   }
@@ -185,16 +171,16 @@ function Chat() {
         </Content>
         <Footer id="Chat-footer">
           <div>
-            <StickerItem
-              HandleEmojih={HandleEmojih}
-              HandleEmojia={HandleEmojia}
-              HandleEmojis={HandleEmojis}
-              HandleEmojic={HandleEmojic}
-              HandleEmojil={HandleEmojil}
-            />
+            <StickerItem appendEmoji={appendEmoji} />
           </div>
           <div style={{ flex: "auto" }}>
-            <Input value={msg} placeholder="Type your message" onChange={e => setMsg(e.target.value)} onPressEnter={sendText} />
+            <Input
+              value={msg}
+              placeholder="Type your message"
+              disabled={!talking}
+              onChange={e => setMsg(e.target.value)}
+              onPressEnter={sendText}
+            />
           </div>
           <div>
             <Button type="primary" icon={<SendOutlined />} onClick={sendText}>
