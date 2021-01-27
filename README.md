@@ -2,7 +2,11 @@
 * Show your personality by editing the custom profile.
 * Make chats with different friends.
 * Share your feelings with emojis, photos, and featured stickers!
-
+## How to start your iChat
+* First, click on 註冊 button in order to enroll your personal information in iChat.
+* Second, find friend with user's id such as user's email you fill in while in registration.
+* Third, enjoy chatting with each other by text, emoji, photo.
+* Remember to log out before you leave your computer through clicking on the head photo.
 ## Development
 * Prerequisite: \
   Make sure the prerequisites are installed \
