@@ -1,5 +1,10 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const fsPromises = require('fs').promises
+const buildPath = require('path').resolve(__dirname + '/../../build')
 const { now } = require('mongoose')
+
+const JWT_SECRET = process.env.JWT_SECRET || 'pneumonoultramicroscopicsilicovolcanoconiosis'
 
 const Mutation = {
   async createUser(parent, { data }, { User }, info) {
@@ -27,6 +32,12 @@ const Mutation = {
   async createMessage(parent, { data }, { Conv, Message, pubsub }, info) {
     const conv0 = await Conv.findOne({_id: data.conv, $or: [{member_1: data.send}, {member_2: data.send}]})
     if (!conv0) throw new Error("The conversation does not exist, or Sender is not in the conversation.")
+    switch (data.type) {
+      case 'IMAGE':
+        data.body = jwt.verify(data.body, JWT_SECRET).i
+        break
+      default:
+    }
     const msg = await Message.create({...data, time: now()})
     const conv = await Conv.findByIdAndUpdate(data.conv, {recent: msg.time}, {new: true})
     pubsub.publish(`message-${conv.member_1}`, {message: {mutation: 'CREATED', payload: msg}})
@@ -38,6 +49,12 @@ const Mutation = {
   async deleteMessage(parent, { _id }, { Conv, Message, pubsub }, info) {
     const msg = await Message.findOneAndDelete({_id})
     if (!msg) throw new Error("Invalid message ID.")
+    switch (msg.type) {
+      case 'IMAGE':
+        if ((await fsPromises.stat(`${buildPath}${msg.body}`)).isFile()) await fsPromises.unlink(`${buildPath}${msg.body}`)
+        break
+      default:
+    }
     const conv = await Conv.findOne({_id: msg.conv})
     pubsub.publish(`message-${conv.member_1}`, {message: {mutation: 'DELETED', payload: msg}})
     pubsub.publish(`message-${conv.member_2}`, {message: {mutation: 'DELETED', payload: msg}})

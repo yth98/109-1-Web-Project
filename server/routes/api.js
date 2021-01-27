@@ -82,6 +82,7 @@ router.post('/logout', (req, res) => {
 
 router.get('/auth', async (req, res) => {
   console.log('API auth', !!req.signedCookies.cred)
+  res.set({ 'Cache-Control': 'private, no-cache, no-store, must-revalidate', })
   if (!req.signedCookies.cred) {
     res.send({ uid: false, msg: 'No credential in cookie.' })
     return
@@ -181,6 +182,29 @@ router.post('/avatar', (req, res) => {
       res.send({ success: true, token: jwt.sign({ a: files.avatar.path }, JWT_SECRET) })
     })
     .catch(err => res.status(400).send({ success: false, msg: err }))
+  })
+})
+
+router.post('/image', (req, res) => {
+  console.log('API image upload', !!req.signedCookies.cred)
+  if (!req.signedCookies.cred) {
+    res.send({ success: false, msg: 'No credential in cookie.' })
+    return
+  }
+  const u = jwt.verify(req.signedCookies.cred, JWT_SECRET).u
+  const form = formidable({ maxFileSize: 2097152 })
+  form.parse(req, async (err, fields, files) => {
+    if (err || !files.image)
+      { res.status(404).send({ success: false }); return }
+    if (['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].indexOf(files.image.type) === -1)
+      { res.status(415).send({ success: false }); return }
+    if (files.image.size > 2097152) // 2 MiB
+      { res.status(413).send({ success: false }); return }
+    console.log(files.image.name, files.image.size)
+    const destPath = `/msg/${Array(8).fill().map(() => Math.random().toString(16).slice(-8)).join('')}`
+    await fsPromises.mkdir(`${buildPath}/msg`, { recursive: true, })
+    await fsPromises.rename(files.image.path, `${buildPath}${destPath}`)
+    res.send({ success: true, token: jwt.sign({ u, i: `${destPath}` }, JWT_SECRET) })
   })
 })
 

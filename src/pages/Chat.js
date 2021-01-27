@@ -67,7 +67,14 @@ function Chat() {
           handleDelete={() => msg.send !== uid || deleteMessage({ variables: {id: msg._id} })}
         />
       case "IMAGE":
-        return <></>
+        return <MessageItem
+          key={msg._id}
+          Sendername={msg.send}
+          Time={time.toLocaleDateString()+" "+time.toLocaleTimeString()}
+          Message={<img src={msg.body} alt={msg.send} style={{ maxWidth: "100%", maxHeight: "40vh" }} />}
+          isI={msg.send === uid}
+          handleDelete={() => msg.send !== uid || deleteMessage({ variables: {id: msg._id} })}
+        />
       case "STICKER":
         return <></>
       case "ATTACHMENT":
@@ -82,12 +89,6 @@ function Chat() {
     if (!talking || !msg.length) return
     sendMessage("TEXT", msg)
     setMsg("")
-  }
-
-  const normFile = (e) => {
-    console.log('Upload event:', e)
-    if (Array.isArray(e)) return e
-    return e && e.fileList
   }
 
   useEffect(() => {
@@ -113,10 +114,10 @@ function Chat() {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      {logout ? <Redirect to={'/'} /> : <></>}
+      {logout ? <Redirect to={"/"} /> : <></>}
       {/* <Sider collapsible collapsed={collapsed} onCollapse={collapsed => setCollapsed(collapsed)} > */}
       <Sider>
-        <ul id="conv" onClick={() => setConversation('')}>
+        <ul id="conv" onClick={() => setConversation("")}>
           <UserItem UID={uid} onClick={doLogout} />
           <AddUserItem onSearch={addUser} />
           {
@@ -191,7 +192,17 @@ function Chat() {
             </Button>
           </div>
           <div>
-            <Upload name="logo" action="/upload.do" listType="picture">
+            <Upload
+              name="image"
+              listType="picture"
+              showUploadList={false}
+              action="/api/image"
+              withCredentials
+              disabled={!talking}
+              onChange={i => {
+                if (i.file.status === "done" && i.file.response.success) sendMessage("IMAGE", i.file.response.token)
+              }}
+            >
               <Button icon={<UploadOutlined />}>
                 Photos
               </Button>

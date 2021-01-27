@@ -5,9 +5,11 @@ import { CONV_SUB, MSG_SUB } from '../graphql'
 import { useQuery, useMutation } from '@apollo/client'
 import instance from '../axios'
 
+const client = new WebSocket(`ws://${process.env.URL_BASE||'localhost'}:4000`)
+
 const useChat = () => {
   const [tokenready, setTKready] = useState(false)
-  // const [wsready, setWSReady] = useState(false)
+  const [wsready, setWSReady] = useState(false)
   const [logout, setLogout] = useState(false)
   const [status, setStatus] = useState({})
   const [uid, setUID] = useState('')
@@ -30,8 +32,6 @@ const useChat = () => {
   const [createMessage] = useMutation(CREATE_MSG_MUT)
   const [modifyMessage] = useMutation(UPDATE_MSG_MUT)
   const [deleteMessage] = useMutation(DELETE_MSG_MUT)
-
-  const client = new WebSocket('ws://localhost:4000')
 
   const addUser = async UID => {
     if (uid.length && UID.length) {
@@ -167,37 +167,20 @@ const useChat = () => {
     setSearch(2)
   }
 
-/* 
   // WebSocket
   client.onopen = () => {
-    // console.log('onopen', wsready, client, client.readyState)
-    if (client.readyState !== 1) return
-    const data = [
-      'auth',
-      {
-        user_id: 'alice',
-        conv_id: '0',
-        credential: 'secret',
-      },
-    ]
-    client.send(JSON.stringify(data))
-    setWSReady(true)
+    setWSReady(client.readyState === 1)
   }
   client.onclose = () => {
-    // console.log('onclose', wsready, client, client.readyState)
-    if (client.readyState !== 1) setWSReady(false)
+    setWSReady(client.readyState === 1)
   }
-  client.onmessage = (message) => {
-    const { data } = message
-    const [task, payload] = JSON.parse(data)
-
+  client.onmessage = message => {
+    const [task, payload] = JSON.parse(message.data)
     switch (task) {
-      case 'authSuccess': {
-        setUID(() => payload.user)
+      case 'authSuccess':
+        setUID(payload.uid)
         break
-      }
       default:
-        break
     }
   }
   useEffect(() => {
@@ -205,25 +188,21 @@ const useChat = () => {
       'auth',
       {
         user_id: 'alice',
-        conv_id: '0',
         credential: 'secret',
       },
     ]
-    // console.log('oneffect', wsready, client, client.readyState, JSON.stringify({data}))
-    if (!wsready || client.readyState !== 1) return
-    client.send(JSON.stringify({ data }))
+    if (!wsready || client.readyState !== 1 || !client.send) return
+    client.send(JSON.stringify(data))
     .then(res => {
-      console.log('websocket auth', uid)
-      // setUID('alice')
+      console.log('websocket auth')
     })
   },
   [wsready])
- */
 
   // Login authorization
   useEffect(() => {
     if (tokenready) return
-    instance.get('/auth', { withCredentials: true })
+    instance.get('/auth')
     .then(res => {
       console.log('auth', res.data)
       if (!res.data.uid) {
@@ -245,10 +224,12 @@ const useChat = () => {
   // Logout
   const doLogout = e => {
     e.stopPropagation()
-    instance.post('/logout', { withCredentials: true })
-    .then(res => setStatus({ type: 'success', msg: '成功登出！' }))
+    instance.post('/logout')
+    .then(res => {
+      setStatus({ type: 'success', msg: '成功登出！' })
+      setLogout(true)
+    })
     .catch(err => {})
-    setLogout(true)
   }
 
   return {

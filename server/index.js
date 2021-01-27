@@ -34,6 +34,7 @@ app.use(cors({ credentials: true, origin: (origin, callback) => {
   else
     callback(null, false)
 } }))
+app.options('/*', (req, res) => res.status(204).send())
 app.use(bodyParser.json())
 app.use(cookieParser(COOKIE_SIGN_SECRET))
 app.use(express.static(buildPath))
@@ -109,12 +110,11 @@ db.once('open', () => {
         case 'auth' : {
           if (payload.credential === 'secret') {
             sendData(['authSuccess', { uid: payload.user_id }])
-            Message.find()
-              .limit(100)
-              .sort({ _id: 1 })
+            Conv.find({$or: [{member_1: payload.user_id}, {member_2: payload.user_id}]})
+              .sort({ recent: -1 })
               .exec((err, res) => {
-                if (err) throw err
-                sendData(['init', res])
+                if (err) console.log(err)
+                else sendData(['conversations', res])
               })
           } else sendStatus({ type: 'danger', msg: 'Authorization failed.' })
           break
