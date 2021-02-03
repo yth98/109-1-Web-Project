@@ -5,7 +5,7 @@ import { CONV_SUB, MSG_SUB } from '../graphql'
 import { useQuery, useMutation } from '@apollo/client'
 import instance from '../axios'
 
-const client = new WebSocket(`ws://${process.env.URL_BASE||'localhost'}:4000`)
+const client = new WebSocket(`ws://${process.env.REACT_APP_URL_BASE||'localhost'}:4000`)
 
 const useChat = () => {
   const [tokenready, setTKready] = useState(false)
