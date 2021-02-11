@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import useChat from './useChat'
 import { Upload, Layout, Button, Input, message, Tooltip } from 'antd'
@@ -22,8 +22,9 @@ function Chat() {
     conversations,
     messages_ready,
     messages,
-    search,
+    msgs_scroll,
     keyword,
+    search,
     doLogout,
     addUser,
     setConversation,
@@ -38,6 +39,7 @@ function Chat() {
   const { Header, Footer, Sider, Content } = Layout
   const [word, setWord] = useState("")
   const [msg, setMsg] = useState("")
+  const chat = useRef()
 
   const userItems = conv => {
     const other = conv.member_2 === uid ? conv.member_1 : conv.member_2
@@ -112,6 +114,11 @@ function Chat() {
     }
   }, [status])
 
+  const lastMessage = chat.current && chat.current.lastElementChild
+  useEffect(() => {
+    if (lastMessage) lastMessage.scrollIntoView(false)
+  }, [msgs_scroll, lastMessage])
+
   return (
     <Layout style={{ height: "100vh" }}>
       {logout ? <Redirect to={"/"} /> : <></>}
@@ -159,7 +166,7 @@ function Chat() {
           </div>
         </Header>
         <Content style={{ margin: "90 20 90 30" }}>
-          <ul id="chat">
+          <ul id="chat" ref={chat}>
           {
             talking && messages_ready
             ? messages.length

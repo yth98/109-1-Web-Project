@@ -18,10 +18,6 @@
   Server side file is `server` which includes `models` ,`resolvers` ,`routes` and `schema.graphql` \
   `yarn server` \
 Remember to replace `.env.defaults` with `.env` file which includes your `MONGO_URL`
-## GitHub repository link
-* https://github.com/yth98/109-1-Web-Project
-## Deploy link
-* http://ichat.cdein.cc/ or http://cdein.cc:4000/
 ## Environment & Packages
 Frontend(ReactJS):
 * react
@@ -52,5 +48,5 @@ Database(MongoDB):
 * MongoDB
 
 ## Contribution
-* Frontend:楊宗賢、林育世
-* Backend:楊宗賢
+* Frontend: yth98, Alexander-Py112
+* Backend: yth98

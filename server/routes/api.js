@@ -13,6 +13,7 @@ const cookieOptions = {
   maxAge: 86400000,
   signed: true,
   httpOnly: true,
+  sameSite: 'strict',
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'pneumonoultramicroscopicsilicovolcanoconiosis'

@@ -6,7 +6,6 @@ import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
 import './index.css'
 import App from './App'
-import reportWebVitals from './reportWebVitals'
 import 'antd/dist/antd.css'
 
 const URL_BASE = process.env.REACT_APP_URL_BASE || 'localhost'
@@ -33,8 +32,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 )
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()

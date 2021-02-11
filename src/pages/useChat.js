@@ -15,6 +15,7 @@ const useChat = () => {
   const [uid, setUID] = useState('')
   const [uid2, setUID2] = useState('')
   const [conv, setConversation] = useState('')
+  const [msgs_scroll, setMsgScroll] = useState(false)
   const [keyword, setKeyword] = useState('')
   const [search, setSearch] = useState(0)
 
@@ -35,7 +36,6 @@ const useChat = () => {
 
   const addUser = async UID => {
     if (uid.length && UID.length) {
-      console.log('add', uid, UID)
       instance.get('/profile', { params: { Id: UID } })
       .then(res => {
         if (res.data.user_id)
@@ -59,6 +59,7 @@ const useChat = () => {
         if (!subscriptionData.data) return prev
         switch (subscriptionData.data.conversation.mutation) {
           case 'CREATED':
+            setMsgScroll(m => !m)
             return {
               ...prev,
               conversations: [
@@ -104,6 +105,7 @@ const useChat = () => {
 
   useEffect(() => {
     if (MsgRef && conv && conv.length) MsgRef()
+    setMsgScroll(m => !m)
     setSearch(0)
   },
   [MsgRef, conv])
@@ -178,7 +180,6 @@ const useChat = () => {
     const [task, payload] = JSON.parse(message.data)
     switch (task) {
       case 'authSuccess':
-        setUID(payload.uid)
         break
       default:
     }
@@ -187,24 +188,20 @@ const useChat = () => {
     const data = [
       'auth',
       {
-        user_id: 'alice',
+        user_id: uid,
         credential: 'secret',
       },
     ]
     if (!wsready || client.readyState !== 1 || !client.send) return
-    client.send(JSON.stringify(data))
-    .then(res => {
-      console.log('websocket auth')
-    })
+    if (uid.length) client.send(JSON.stringify(data))
   },
-  [wsready])
+  [wsready, uid])
 
   // Login authorization
   useEffect(() => {
     if (tokenready) return
     instance.get('/auth')
     .then(res => {
-      console.log('auth', res.data)
       if (!res.data.uid) {
         setStatus({ type: 'danger', msg: res.data.msg })
         setLogout(true)
@@ -251,8 +248,9 @@ const useChat = () => {
       search === 1 ? !!MessagesInUser.data && MessagesInUser.data.messagesUser :
       !!Messages.data && Messages.data.messages
     ),
-    search,
+    msgs_scroll,
     keyword,
+    search,
     doLogout,
     addUser,
     setConversation,
